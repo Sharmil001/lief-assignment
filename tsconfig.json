@@ -1,0 +1,13 @@
+{
+ "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@shared/*": ["shared/src/*"]
+    }
+  },
+  "files": [],
+  "references": [
+    { "path": "frontend" },
+    { "path": "backend" }
+  ]
+}
