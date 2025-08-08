@@ -1,6 +1,6 @@
 {
-  "id": "c672535b-682d-46f7-a2dd-a91c0172b65f",
-  "prevId": "00000000-0000-0000-0000-000000000000",
+  "id": "44250c7a-a429-40c4-a593-4f9eb25c1d83",
+  "prevId": "c672535b-682d-46f7-a2dd-a91c0172b65f",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
@@ -20,6 +20,12 @@
           "type": "uuid",
           "primaryKey": false,
           "notNull": true
+        },
+        "patient_name": {
+          "name": "patient_name",
+          "type": "varchar(100)",
+          "primaryKey": false,
+          "notNull": false
         },
         "note_type": {
           "name": "note_type",

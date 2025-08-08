@@ -1,5 +1,5 @@
 "use client";
-import Button from "frontend/src/_components/Button";
+import Button from "@f/_components/Button";
 import { redirect } from "next/navigation";
 import { useState } from "react";
 

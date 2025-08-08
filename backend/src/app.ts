@@ -8,8 +8,8 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-app.use("/patients", patientRoutes);
-app.use("/notes", noteRoutes);
+app.use("/api/patients", patientRoutes);
+app.use("/api/notes", noteRoutes);
 
 app.get("/", (_, res) => {
 	res.json({

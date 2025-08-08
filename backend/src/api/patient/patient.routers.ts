@@ -3,7 +3,8 @@ import { PatientController } from "./patient.controllers";
 
 const router = Router();
 
-router.get("/", PatientController.getAll);
+// router.get("/", PatientController.getAll);
+router.get("/", PatientController.getAllWithPagination);
 router.get("/:id", PatientController.getById);
 router.post("/", PatientController.create);
 router.put("/:id", PatientController.update);

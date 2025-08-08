@@ -24,13 +24,13 @@ const Header = () => {
 							<div className="flex gap-2">
 								<a
 									href="/patients"
-									className="font-semibold hover:text-red-600"
+									className="font-semibold hover:text-amber-600"
 								>
 									Patients
 								</a>
 							</div>
 							<div className="flex gap-2">
-								<a href="/notes" className="font-semibold hover:text-red-600">
+								<a href="/notes" className="font-semibold hover:text-amber-600">
 									Notes
 								</a>
 							</div>

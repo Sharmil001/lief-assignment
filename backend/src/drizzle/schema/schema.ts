@@ -41,12 +41,10 @@ export const notes = pgTable("notes", {
 	patientId: uuid("patient_id")
 		.notNull()
 		.references(() => patients.id, { onDelete: "cascade" }),
-	doctorId: uuid("doctor_id")
-		.notNull()
-		.references(() => users.id, { onDelete: "set null" }),
+	patientName: varchar("patient_name", { length: 100 }),
 	noteType: noteTypeEnum("note_type").notNull(),
+	title: varchar("title", { length: 100 }).notNull(),
 	content: text("content").notNull(),
-	fileUrl: text("file_url"),
 	createdAt: timestamp("created_at").defaultNow().notNull(),
 	updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });
@@ -65,9 +63,5 @@ export const notesRelations = relations(notes, ({ one }) => ({
 	patient: one(patients, {
 		fields: [notes.patientId],
 		references: [patients.id],
-	}),
-	doctor: one(users, {
-		fields: [notes.doctorId],
-		references: [users.id],
 	}),
 }));
