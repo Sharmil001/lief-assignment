@@ -131,6 +131,7 @@ const NoteInput = () => {
 								placeholder="Title"
 								onChange={(e) => setNote({ ...note, title: e.target.value })}
 								autoFocus={noteType === "scan"}
+								maxLength={20}
 							/>
 							<div className="w-full flex gap-1 border-1 rounded-lg p-2">
 								<select
@@ -163,6 +164,7 @@ const NoteInput = () => {
 								value={note.noteText}
 								onInput={handleInput}
 								onChange={(e) => setNote({ ...note, noteText: e.target.value })}
+								maxLength={1000}
 							/>
 						</>
 					)}

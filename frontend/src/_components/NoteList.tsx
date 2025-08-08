@@ -62,9 +62,9 @@ const dummyNotes = [
 
 type Note = {
 	id: number;
-	title: string;
+	title?: string;
 	patientName: string;
-	patientId: string;
+	patientId?: string;
 	noteText: string;
 	pinned: boolean;
 	createdAt: string;
@@ -82,9 +82,6 @@ const NoteList = (props: NoteListProps) => {
 		pageSize: 5,
 	});
 
-	const pinnedNotes = dummyNotes.filter((note) => note.pinned);
-	const unpinnedNotes = dummyNotes.filter((note) => !note.pinned);
-
 	const saveNote = () => {
 		// Save API
 	};
@@ -99,42 +96,9 @@ const NoteList = (props: NoteListProps) => {
 
 	return (
 		<div className="container mx-auto py-3 mt-8">
-			{pinnedNotes.length > 0 && (
-				<section className="mb-6">
-					<h2 className="text-lg font-semibold flex gap-2 items-center bg-clip-text text-transparent bg-gradient-to-r from-amber-500 to-red-500">
-						<Pin
-							width={20}
-							height={20}
-							cursor="pointer"
-							className="text-amber-500"
-						/>
-						PINNED
-					</h2>
-					<div className="py-3 masonry-container">
-						{pinnedNotes.map((note) => (
-							<NoteCard
-								key={note.id}
-								note={note}
-								onEdit={() => openEditDialog(note)}
-							/>
-						))}
-					</div>
-				</section>
-			)}
 			<section className="mb-6">
-				{pinnedNotes.length > 0 && (
-					<h2 className="text-lg font-semibold flex gap-2 items-center bg-clip-text text-transparent bg-gradient-to-r from-amber-500 to-red-500">
-						<Square
-							width={20}
-							height={20}
-							cursor="pointer"
-							className="text-amber-500"
-						/>
-						OTHERS
-					</h2>
-				)}
 				<div className="py-3 masonry-container">
-					{unpinnedNotes.map((note) => (
+					{dummyNotes.map((note) => (
 						<NoteCard
 							key={note.id}
 							note={note}
@@ -306,7 +270,7 @@ const NoteModal = ({
 						<Label htmlFor="description">Description</Label>
 						<textarea
 							id="description"
-							className="border-1 border-input rounded-lg px-4 py-2 w-full min-h-100 resize-none overflow-y-auto bg-white text-gray-800 leading-relaxed focus:outline-none placeholder-gray-500"
+							className="border-1 border-input rounded-lg px-4 py-2 w-full min-h-40 resize-none overflow-y-auto bg-white text-gray-800 leading-relaxed focus:outline-none placeholder-gray-500"
 							placeholder="Take a note..."
 							autoFocus
 							value={note.noteText}
