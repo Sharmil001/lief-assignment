@@ -1,11 +1,19 @@
 "use client";
 import Image from "next/image";
 import { useState } from "react";
-import Button from "./Button";
 import { bytesToMB } from "../utils/helper";
+import {
+	ArrowUpFromLine,
+	ChevronDown,
+	ClipboardMinus,
+	Trash,
+} from "lucide-react";
+import { Button } from "../components/ui/button";
+import { Input } from "../components/ui/input";
 
 const initialNote = {
-	patientName: "",
+	title: "",
+	patient: "",
 	noteText: "",
 };
 
@@ -27,11 +35,6 @@ const NoteInput = () => {
 		clearState();
 	};
 
-	const clearState = () => {
-		setNoteType("");
-		setNote(initialNote);
-	};
-
 	const handleInput = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
 		const el = e.target;
 		el.style.height = "auto";
@@ -47,27 +50,35 @@ const NoteInput = () => {
 		}
 	};
 
+	const clearState = () => {
+		setNoteType("");
+		setNote(initialNote);
+		setUploadedFile(null);
+	};
+
 	return (
-		<div className="w-4/6">
-			<div className="w-full px-4 py-3 border-2 border-black rounded-lg z-1 bg-white relative shadow-[3px_3px_0px_rgba(0,0,0,1)]">
+		<div className="w-full lg:w-4/6">
+			<div
+				className={`w-full px-4 py-3 border-2 border-black rounded-lg z-1 bg-white relative shadow-[3px_3px_0px_rgba(0,0,0,1)]`}
+			>
 				{/* Initial View */}
 				{!noteType && (
 					<div className="w-full flex justify-between items-center">
 						<span
-							className="text-gray-500 w-full cursor-text"
+							className="text-gray-400 w-full cursor-text"
 							onClick={() => handleSubmit("type")}
 						>
 							Take a note...
 						</span>
 						<label className="cursor-pointer">
-							<Image
-								src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSIjMDAwIj4KICA8cGF0aCBkPSJNMTkgM0g1Yy0xLjEgMC0yIC45LTIgMnYxNGMwIDEuMS45IDIgMiAyaDE0YzEuMSAwIDItLjkgMi0yVjVjMC0xLjEtLjktMi0yLTJ6bTAgMTZINVY1aDE0djE0em0tNS03bC0zIDMuNzJMOSAxM2wtMyA0aDEybC00LTV6Ii8+Cjwvc3ZnPgo="
-								alt="upload-icon"
-								width={20}
-								height={20}
-							/>
-							<input
+							<div className="flex gap-1 items-center focus:outline-none hover:bg-gray-100 p-2 cursor-pointer rounded-lg">
+								<ArrowUpFromLine width={18} height={18} />
+								<span className="font-semibold">Upload</span>
+							</div>
+
+							<Input
 								type="file"
+								variant="primary"
 								onChange={handleFileChange}
 								accept="image/*,application/pdf"
 								className="hidden"
@@ -88,19 +99,11 @@ const NoteInput = () => {
 							/>
 						</div>
 					)}
-					{noteType === "scan" && uploadedFile?.type.startsWith("pdf") && (
-						<div className="flex justify-between items-center border-2 rounded-lg px-4 py-2 max-w-7xl">
-							<div className="flex gap-2">
-								<Image
-									src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIiBzdHJva2U9ImN1cnJlbnRDb2xvciIgc3Ryb2tlLXdpZHRoPSIyIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiIGNsYXNzPSJsdWNpZGUgbHVjaWRlLWNsaXBib2FyZC1taW51cy1pY29uIGx1Y2lkZS1jbGlwYm9hcmQtbWludXMiPjxyZWN0IHdpZHRoPSI4IiBoZWlnaHQ9IjQiIHg9IjgiIHk9IjIiIHJ4PSIxIiByeT0iMSIvPjxwYXRoIGQ9Ik0xNiA0aDJhMiAyIDAgMCAxIDIgMnYxNGEyIDIgMCAwIDEtMiAySDZhMiAyIDAgMCAxLTItMlY2YTIgMiAwIDAgMSAyLTJoMiIvPjxwYXRoIGQ9Ik05IDE0aDYiLz48L3N2Zz4="
-									alt="doc-icon"
-									width={24}
-									height={24}
-								/>
-								<div
-									className="flex flex-col gap-2"
-									onClick={() => setNoteType("type")}
-								>
+					{noteType === "scan" && uploadedFile?.type.includes("pdf") && (
+						<div className="flex justify-between items-center border-2 rounded-lg px-4 py-2">
+							<div className="flex gap-2 items-center">
+								<ClipboardMinus width={24} height={24} />
+								<div className="flex flex-col gap-2">
 									<div className="flex flex-col">
 										<span className="font-semibold text-sm">
 											{uploadedFile?.name}
@@ -111,43 +114,66 @@ const NoteInput = () => {
 									</div>
 								</div>
 							</div>
-							<Image
-								className="cursor-pointer"
-								src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIiBzdHJva2U9ImN1cnJlbnRDb2xvciIgc3Ryb2tlLXdpZHRoPSIyIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiIGNsYXNzPSJsdWNpZGUgbHVjaWRlLXRyYXNoLWljb24gbHVjaWRlLXRyYXNoIj48cGF0aCBkPSJNMTkgNnYxNGEyIDIgMCAwIDEtMiAySDdhMiAyIDAgMCAxLTItMlY2Ii8+PHBhdGggZD0iTTMgNmgxOCIvPjxwYXRoIGQ9Ik04IDZWNGEyIDIgMCAwIDEgMi0yaDRhMiAyIDAgMCAxIDIgMnYyIi8+PC9zdmc+"
-								alt="doc-icon"
+							<Trash
 								width={18}
 								height={18}
+								cursor="pointer"
 								onClick={clearState}
 							/>
 						</div>
 					)}
 
 					{noteType && (
-						<input
-							type="text"
-							className="w-full text-lg font-semibold placeholder:text-gray-400 placeholder:font-semibold focus-visible:outline-none"
-							placeholder="Patient Name"
-							onChange={(e) =>
-								setNote({ ...note, patientName: e.target.value })
-							}
-							autoFocus={noteType === "scan"}
-						/>
+						<>
+							<Input
+								type="text"
+								variant="default"
+								placeholder="Title"
+								onChange={(e) => setNote({ ...note, title: e.target.value })}
+								autoFocus={noteType === "scan"}
+							/>
+							<div className="w-full flex gap-1 border-1 rounded-lg p-2">
+								<select
+									className={`w-full appearance-none px-2 text-sm focus:outline-none ${!note.patient ? "text-gray-400" : "text-gray-700"}`}
+									onChange={(e) =>
+										setNote({ ...note, patient: e.target.value })
+									}
+								>
+									<option className="text-sm text-gray-400">
+										--Select Patient--
+									</option>
+									<option value="Sharmil">Sharmil</option>
+									<option value="John">John</option>
+								</select>
+								<div
+									className={`flex items-center px-2 ${!note.patient ? "text-gray-400" : "text-gray-700"}`}
+								>
+									<ChevronDown width={18} height={18} />
+								</div>
+							</div>
+						</>
 					)}
 
 					{noteType === "type" && (
-						<textarea
-							className="w-full resize-none overflow-y-auto bg-white text-gray-800  leading-relaxed focus:outline-none max-h-[40vh] h-auto placeholder-gray-500"
-							placeholder="Take a note..."
-							autoFocus
-							value={note.noteText}
-							onInput={handleInput}
-							onChange={(e) => setNote({ ...note, noteText: e.target.value })}
-						/>
+						<>
+							<textarea
+								className="border border-input rounded-lg px-4 py-2 w-full resize-none overflow-y-auto bg-white text-gray-800 leading-relaxed focus:outline-none max-h-[40vh] h-auto placeholder-gray-400"
+								placeholder="Take a note..."
+								autoFocus
+								value={note.noteText}
+								onInput={handleInput}
+								onChange={(e) => setNote({ ...note, noteText: e.target.value })}
+							/>
+						</>
 					)}
 					{noteType && (
-						<div className="flex gap-2 justify-end">
-							<Button name="Save" type="primary" onClick={saveNote} />
-							<Button name="Clear" type="primary" onClick={clearNote} />
+						<div className="flex gap-2 justify-end mt-2">
+							<Button variant="secondary" onClick={clearNote}>
+								Clear
+							</Button>
+							<Button variant="primary" onClick={saveNote}>
+								Save
+							</Button>
 						</div>
 					)}
 				</div>
