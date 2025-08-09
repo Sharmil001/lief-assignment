@@ -3,15 +3,16 @@
 import { Patient } from "@b/drizzle/schema/schema";
 import PatientFormDialog, {
 	PatientSchemaType,
-} from "@f/_components/PatientForm";
-import PatientTabel from "@f/_components/PatientTabel";
+} from "@f/_components/patient-settings/PatientForm";
+import PatientTable from "@f/_components/patient-settings/PatientTabel";
 import {
 	addPatient,
 	updatePatient,
 	deletePatient,
 	fetchPatientsWithPagination,
-} from "@f/lib/patient-apis";
+} from "@f/apis/patient";
 import { useEffect, useState } from "react";
+import { toast } from "react-toastify";
 
 export type LoadingState = null | "fetch" | "save";
 
@@ -54,14 +55,19 @@ export default function PatientsTable() {
 				setPatients((prev) =>
 					prev.map((p) => (p.id === updated.id ? data : p)),
 				);
+				toast.success("Patient updated successfully");
 			} else {
-				const [data] = await addPatient(updated);
-				setPatients((prev) => [...prev, data]);
+				await addPatient(updated);
+				const { page, limit } = pagination;
+				const { data, total } = await fetchPatientsWithPagination(page, limit);
+				setPatients(data);
+				setPagination((p) => ({ ...p, total }));
+				toast.success("Patient added successfully");
 			}
 			setShowDialog(false);
 			setRow(null);
 		} catch (err) {
-			console.error(err);
+			toast.error(`Failed to ${updated.id ? "update" : "add"}: \n${err}`);
 		} finally {
 			setLoading(null);
 		}
@@ -71,9 +77,13 @@ export default function PatientsTable() {
 		setLoading("save");
 		try {
 			await deletePatient(id);
-			setPatients((prev) => prev.filter((p) => p.id !== id));
+			const { page, limit } = pagination;
+			const { data, total } = await fetchPatientsWithPagination(page, limit);
+			setPatients(data);
+			setPagination((p) => ({ ...p, total }));
+			toast.success("Patient deleted successfully");
 		} catch (err) {
-			console.error(err);
+			toast.error(`Failed Delete: \n${err}`);
 		} finally {
 			setLoading(null);
 		}
@@ -92,7 +102,7 @@ export default function PatientsTable() {
 	return (
 		<div className="w-full">
 			<div className="container mx-auto px-4 md:px-8 py-3">
-				<PatientTabel
+				<PatientTable
 					patients={patients}
 					showEditDialog={(p) => {
 						setRow(p);

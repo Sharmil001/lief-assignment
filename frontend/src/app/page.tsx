@@ -1,10 +1,14 @@
-import { authenticated } from "../utils/auth";
+import { authenticated } from "@f/utils/auth";
+import { redirect } from "next/navigation";
 
 export default async function Home() {
-	const isAuth = await authenticated();
-	// if (!isAuth) {
-	// 	redirect("/login");
-	// }
+	const token = authenticated();
 
-	return <h1>Dashboard</h1>;
+	if (!token) {
+		redirect("/auth");
+	} else {
+		redirect("/n4d/patients");
+	}
+
+	return null;
 }

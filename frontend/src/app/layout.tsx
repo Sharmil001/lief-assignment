@@ -1,9 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
-import Header from "../_components/Header";
 import "./globals.css";
-import BodyBg from "../_components/BodyBg";
-import { cookies } from "next/headers";
+import ToastProvider from "@f/_components/base/ToastProvider";
 
 const geistSans = Geist({
 	variable: "--font-geist-sans",
@@ -25,16 +23,12 @@ export default async function RootLayout({
 }: Readonly<{
 	children: React.ReactNode;
 }>) {
-	const authenticated = (await cookies()).get("token") !== undefined;
 	return (
 		<html lang="en">
 			<body
 				className={`${geistSans.variable} ${geistMono.variable} antialiased`}
 			>
-				{/* <BodyBg /> */}
-				{/* {authenticated && <Header />} */}
-				<Header />
-				{children}
+				<ToastProvider>{children}</ToastProvider>
 			</body>
 		</html>
 	);

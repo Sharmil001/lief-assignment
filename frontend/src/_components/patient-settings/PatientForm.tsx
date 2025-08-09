@@ -6,24 +6,31 @@ import {
 	DialogContent,
 } from "@f/components/ui/dialog";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import z from "zod";
 import { Label } from "@f/components/ui/label";
 import { Input } from "@f/components/ui/input";
 import { Button } from "@f/components/ui/button";
-import { ChevronDown, Loader2 } from "lucide-react";
-import { LoadingState } from "@f/app/patients/page";
+import { Loader2 } from "lucide-react";
+import { LoadingState } from "@f/app/n4d/patients/page";
+import {
+	Select,
+	SelectContent,
+	SelectItem,
+	SelectTrigger,
+	SelectValue,
+} from "@f/components/ui/select";
 
 const genderEnum = z.enum(["male", "female"]);
 
 const patientSchema = z.object({
 	firstName: z
 		.string()
-		.min(1, "First name is required")
+		.min(3, "First name must be ≥ 3 characters")
 		.max(100, "First name must be ≤ 100 characters"),
 	lastName: z
 		.string()
-		.min(1, "Last name is required")
+		.min(3, "Last name must be ≥ 3 characters")
 		.max(100, "Last name must be ≤ 100 characters"),
 	dob: z
 		.string()
@@ -51,6 +58,7 @@ const PatientFormDialog: React.FC<PatientFormDialogProps> = ({
 	loading,
 }) => {
 	const {
+		control,
 		register,
 		handleSubmit,
 		formState: { errors },
@@ -135,25 +143,27 @@ const PatientFormDialog: React.FC<PatientFormDialogProps> = ({
 
 						<div className="space-y-2">
 							<Label htmlFor="dateOfBirth">Gender</Label>
-							<div>
-								<div className="w-full flex gap-1 border-1 rounded-lg p-2">
-									<select
-										className="w-full appearance-none px-2 text-sm focus:outline-none text-gray-700"
-										{...register("gender")}
-									>
-										<option value="male">Male</option>
-										<option value="female">Female</option>
-									</select>
-									<div className="flex items-center px-2 text-gray-700">
-										<ChevronDown width={18} height={18} />
-									</div>
-								</div>
-								{errors.gender && (
-									<span className="text-red-600 text-xs">
-										{errors.gender.message}
-									</span>
+							<Controller
+								name="gender"
+								control={control}
+								rules={{ required: "Gender is required" }}
+								render={({ field }) => (
+									<Select onValueChange={field.onChange} value={field.value}>
+										<SelectTrigger className="w-full">
+											<SelectValue placeholder="Gender" />
+										</SelectTrigger>
+										<SelectContent>
+											<SelectItem value="male">Male</SelectItem>
+											<SelectItem value="female">Female</SelectItem>
+										</SelectContent>
+									</Select>
 								)}
-							</div>
+							/>
+							{errors.gender && (
+								<span className="text-red-600 text-xs">
+									{errors.gender.message}
+								</span>
+							)}
 						</div>
 						<div className="flex justify-end gap-2">
 							<Button variant="secondary" onClick={onCancel}>

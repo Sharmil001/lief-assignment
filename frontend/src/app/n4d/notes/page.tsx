@@ -1,22 +1,25 @@
 "use client";
 
 import { Note, Patient } from "@b/drizzle/schema/schema";
-import NoteInput from "@f/_components/NoteInput";
-import NoteList from "@f/_components/NoteList";
+import NoteList from "@f/_components/notes-setting/NoteList";
+import NoteInput from "@f/_components/notes-setting/NoteInput";
 import {
 	addNote,
 	deleteNote,
 	fetchNotesWithPagination,
 	updateNote,
 	uploadNote,
-} from "@f/lib/note-apis";
-import { fetchPatients } from "@f/lib/patient-apis";
+} from "@f/apis/note";
+import { fetchPatients } from "@f/apis/patient";
 import { useEffect, useState } from "react";
+import { toast } from "react-toastify";
 
 export type LoadingState =
 	| null
 	| "fetchPatients"
 	| "fetchNotes"
+	| "fetchNextNotes"
+	| "fetchPrevNotes"
 	| "saving"
 	| "deleting";
 
@@ -33,13 +36,12 @@ const Notes = () => {
 	useEffect(() => {
 		setLoading("fetchPatients");
 		fetchPatients()
-			.then((res) => setPatients(res.data ?? []))
+			.then((res) => setPatients(res ?? []))
 			.catch((err) => console.error(err))
 			.finally(() => setLoading(null));
 	}, []);
 
 	useEffect(() => {
-		setLoading("fetchNotes");
 		const { page, limit } = pagination;
 		fetchNotesWithPagination(page, limit)
 			.then(({ data, total }) => {
@@ -50,17 +52,21 @@ const Notes = () => {
 			.finally(() => setLoading(null));
 	}, [pagination.page, pagination.limit]);
 
-	const prevPage = () =>
+	const prevPage = () => {
+		setLoading("fetchPrevNotes");
 		setPagination((p) => ({
 			...p,
 			page: Math.max(1, p.page - 1),
 		}));
+	};
 
-	const nextPage = () =>
+	const nextPage = () => {
+		setLoading("fetchNextNotes");
 		setPagination((p) => ({
 			...p,
 			page: p.page * p.limit < p.total ? p.page + 1 : p.page,
 		}));
+	};
 
 	const saveNote = async (note: Note & { file: File }) => {
 		try {
@@ -83,9 +89,11 @@ const Notes = () => {
 			);
 			setNotes(updatedNotes);
 			setPagination((prev) => ({ ...prev, total }));
+			toast.success(`Note added successfully`);
+			return true;
 		} catch (err) {
-			console.error(err);
-			alert("Error saving note. Please try again.");
+			toast.error(`Failed to add: \n${err}`);
+			return false;
 		} finally {
 			setLoading(null);
 		}
@@ -94,7 +102,7 @@ const Notes = () => {
 	const editNote = async (id: string, note: Note) => {
 		try {
 			setLoading("saving");
-			const [data] = await updateNote(id, note);
+			await updateNote(id, note);
 
 			const { page, limit } = pagination;
 			const { data: updatedNotes, total } = await fetchNotesWithPagination(
@@ -103,8 +111,11 @@ const Notes = () => {
 			);
 			setNotes(updatedNotes);
 			setPagination((prev) => ({ ...prev, total }));
+			toast.success("Note updated successfully");
+			return true;
 		} catch (err) {
-			console.error(err);
+			toast.error(`Failed to update: \n${err}`);
+			return false;
 		} finally {
 			setLoading(null);
 		}
@@ -114,10 +125,17 @@ const Notes = () => {
 		try {
 			setLoading("deleting");
 			await deleteNote(id);
-			setNotes((prev) => prev.filter((p) => p.id !== id));
-			setPagination((prev) => ({ ...prev, total: prev.total - 1 }));
+
+			const { page, limit } = pagination;
+			const { data: updatedNotes, total } = await fetchNotesWithPagination(
+				page,
+				limit,
+			);
+			setNotes(updatedNotes);
+			setPagination((prev) => ({ ...prev, total }));
+			toast.success("Note deleted successfully");
 		} catch (err) {
-			console.error(err);
+			toast.error(`Failed to delete: \n${err}`);
 		} finally {
 			setLoading(null);
 		}
@@ -126,16 +144,14 @@ const Notes = () => {
 	return (
 		<div className="flex flex-col items-center h-screen">
 			<div className="container mx-auto px-4 md:px-8 py-3">
-				{/* take note input */}
 				<div className="flex justify-center items-center mt-4">
 					<NoteInput
 						patients={patients}
 						onAdd={saveNote}
-						disabled={loading === "saving"}
+						loading={loading === "saving"}
 					/>
 				</div>
 
-				{/* show list of notes */}
 				<NoteList
 					notes={notes}
 					patients={patients}

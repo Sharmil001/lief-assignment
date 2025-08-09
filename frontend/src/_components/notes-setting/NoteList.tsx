@@ -1,17 +1,17 @@
 "use client";
 import { ChevronLeft, ChevronRight, Loader2 } from "lucide-react";
 import { useState } from "react";
-import { Button } from "../components/ui/button";
 import { Note, Patient } from "@b/drizzle/schema/schema";
 import NoteModal from "./NoteModel";
 import NoteCard from "./NotesCard";
-import { LoadingState } from "@f/app/notes/page";
 import { getLightBgAndShadowForPatient } from "@f/utils/color-mapper";
+import { Button } from "@f/components/ui/button";
+import { LoadingState } from "@f/app/n4d/notes/page";
 
 interface NoteListProps {
 	notes: Note[];
 	patients: Patient[];
-	onUpdate: (id: string, note: Note) => void;
+	onUpdate: (id: string, note: Note) => Promise<boolean>;
 	onDelete: (id: string) => void;
 	pagination: { page: number; limit: number; total: number };
 	onPrevPage: () => void;
@@ -23,10 +23,12 @@ const NoteList = (props: NoteListProps) => {
 	const [note, setNote] = useState<Note | null>(null);
 	const { page, limit, total } = props.pagination;
 
-	const handleUpdate = (updatedNote: Note) => {
+	const handleUpdate = async (updatedNote: Note) => {
 		if (note && note.id) {
-			props.onUpdate(note.id, updatedNote);
-			setNote(null);
+			const success = await props.onUpdate(note.id, updatedNote);
+			if (success) {
+				setNote(null);
+			}
 		}
 	};
 
@@ -75,7 +77,11 @@ const NoteList = (props: NoteListProps) => {
 						onClick={props.onPrevPage}
 						disabled={page === 1}
 					>
-						<ChevronLeft className="h-4 w-4" />
+						{props.loading === "fetchPrevNotes" ? (
+							<Loader2 className="w-4 h-4 animate-spin text-black" />
+						) : (
+							<ChevronLeft className="h-4 w-4" />
+						)}
 					</Button>
 					<Button
 						variant="outline"
@@ -83,7 +89,11 @@ const NoteList = (props: NoteListProps) => {
 						onClick={props.onNextPage}
 						disabled={page * limit >= total}
 					>
-						<ChevronRight className="h-4 w-4" />
+						{props.loading === "fetchNextNotes" ? (
+							<Loader2 className="w-4 h-4 animate-spin text-black" />
+						) : (
+							<ChevronRight className="h-4 w-4" />
+						)}
 					</Button>
 				</div>
 			)}
@@ -94,6 +104,7 @@ const NoteList = (props: NoteListProps) => {
 					patients={props.patients}
 					onUpdate={handleUpdate}
 					onCancel={() => setNote(null)}
+					loading={props.loading === "saving"}
 				/>
 			)}
 		</div>

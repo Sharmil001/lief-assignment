@@ -1,15 +1,18 @@
 "use client";
 import { CircleUser, LogOut } from "lucide-react";
-import { redirect, usePathname } from "next/navigation";
+import { usePathname } from "next/navigation";
 import Image from "next/image";
-import { Button } from "../components/ui/button";
+import { logout } from "@f/apis/auth";
+import { useRouter } from "next/navigation";
+import { Button } from "@f/components/ui/button";
 
 const Header = () => {
 	const pathname = usePathname();
+	const router = useRouter();
 
-	const logOut = () => {
-		// handle logout logic here if any
-		redirect("/login");
+	const onLogOut = async () => {
+		await logout();
+		router.push("/");
 	};
 
 	return (
@@ -18,23 +21,23 @@ const Header = () => {
 				<div className="flex justify-between items-center">
 					<div className="flex items-center gap-4">
 						<div className="text-2xl font-bold tracking-tighter mr-2">
-							<a href="/">
+							<a href="/n4d/patients">
 								<Image src="/logo.png" alt="logo" width={70} height={70} />
 							</a>
 						</div>
 						<div className="flex gap-4">
 							<a
-								href="/patients"
+								href="/n4d/patients"
 								className={`font-semibold hover:text-amber-600 ${
-									pathname === "/patients" ? "text-amber-600 underline" : ""
+									pathname === "/n4d/patients" ? "text-amber-600 underline" : ""
 								}`}
 							>
 								Patients
 							</a>
 							<a
-								href="/notes"
+								href="/n4d/notes"
 								className={`font-semibold hover:text-amber-600 ${
-									pathname === "/notes" ? "text-amber-600 underline" : ""
+									pathname === "/n4d/notes" ? "text-amber-600 underline" : ""
 								}`}
 							>
 								Notes
@@ -46,7 +49,7 @@ const Header = () => {
 							<CircleUser />
 							<div className="font-semibold">Hi, Sharmil!</div>
 						</div>
-						<Button onClick={logOut} variant="primary">
+						<Button onClick={onLogOut} variant="primary">
 							<LogOut width={18} height={18} />
 							<span>Logout</span>
 						</Button>

@@ -14,6 +14,7 @@ const Config = z
 		DATABASE_CONNECTION: z.string(),
 		PORT: z.string(),
 		PERPLEXITY_API_KEY: z.string(),
+		JWT_SECRET: z.string(),
 	})
 	.readonly();
 

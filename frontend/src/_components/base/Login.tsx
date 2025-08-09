@@ -6,10 +6,6 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { login } from "@f/apis/auth";
-import Image from "next/image";
-import { useState } from "react";
-import { toast } from "react-toastify";
-import { Loader2 } from "lucide-react";
 
 const loginSchema = z.object({
 	email: z.string().email("Invalid email address"),
@@ -20,7 +16,6 @@ type LoginFormInputs = z.infer<typeof loginSchema>;
 
 const Login = () => {
 	const router = useRouter();
-	const [isLoading, setIsLoading] = useState(false);
 
 	const {
 		register,
@@ -31,17 +26,13 @@ const Login = () => {
 	});
 
 	const onLogin = async (data: LoginFormInputs) => {
-		setIsLoading(true);
 		try {
 			const res = await login(data);
 			if (res) {
-				router.push("/");
+				router.push("/notes");
 			}
-
-			setIsLoading(false);
 		} catch (error) {
-			toast.error("Failed to login. Please try again later.");
-			setIsLoading(false);
+			console.error("Something went wrong. Please try again.");
 		}
 	};
 
@@ -52,8 +43,8 @@ const Login = () => {
 				className="max-w-md w-full bg-white p-8 rounded z-10 relative border-2 border-black hover:shadow-[8px_8px_0px_rgba(0,0,0,0.1)] duration-300"
 				noValidate
 			>
-				<div className="mb-8 flex items-center justify-center w-full">
-					<Image src="/logo.png" alt="logo" width={120} height={120} />
+				<div className="mb-6 text-4xl font-bold tracking-tighter mt-1 bg-clip-text text-transparent bg-gradient-to-r from-amber-500 to-red-500 text-center">
+					Note4Doc
 				</div>
 
 				<label htmlFor="email" className="block mb-1 font-semibold">
@@ -63,7 +54,7 @@ const Login = () => {
 					id="email"
 					type="email"
 					{...register("email")}
-					className={`w-full p-3 mb-4 rounded border-2 ${
+					className={`w-full p-3 mb-1 rounded border-2 ${
 						errors.email
 							? "border-red-600 shadow-[0_0_5px_red]"
 							: "border-black shadow-[3px_3px_0px_rgba(0,0,0,1)]"
@@ -81,7 +72,7 @@ const Login = () => {
 					id="password"
 					type="password"
 					{...register("password")}
-					className={`w-full p-3 mb-4 rounded border-2 ${
+					className={`w-full p-3 mb-1 rounded border-2 ${
 						errors.password
 							? "border-red-600 shadow-[0_0_5px_red]"
 							: "border-black shadow-[3px_3px_0px_rgba(0,0,0,1)]"
@@ -95,25 +86,16 @@ const Login = () => {
 				<Button
 					type="submit"
 					variant="primary"
-					className="w-full mt-8 h-12"
+					className="w-full mt-2 h-10"
 					disabled={isSubmitting}
 				>
-					{isLoading ? (
-						<Loader2 className="w-4 h-4 animate-spin text-black" />
-					) : (
-						"Login"
-					)}
+					{isSubmitting ? "Logging in..." : "Login"}
 				</Button>
 			</form>
 
-			<div className="absolute top-0 left-0 bg-orange-100 border-2 border-black text-black py-2 px-4 rounded-lg">
-				<div className="text-lg font-bold">Demo Login</div>
-				<div className="text-sm">
-					Email: <b>sharmil@gmail.com</b>
-				</div>
-				<div className="text-sm">
-					Password: <b>123456</b>
-				</div>
+			<div className="absolute top-0 left-0 bg-amber-50 border-2 border-black text-black p-4 rounded-lg">
+				<div className="text-sm">Email: sharmil@gmail.com</div>
+				<div className="text-sm">Password: 123456</div>
 			</div>
 		</div>
 	);

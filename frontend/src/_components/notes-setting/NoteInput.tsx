@@ -2,41 +2,68 @@
 
 import Image from "next/image";
 import { useState } from "react";
-import { bytesToMB } from "../utils/helper";
 import {
 	ArrowUpFromLine,
+	Check,
 	ChevronDown,
 	ClipboardMinus,
+	Loader2,
 	Trash,
 } from "lucide-react";
-import { Button } from "../components/ui/button";
-import { Input } from "../components/ui/input";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Note, Patient } from "@b/drizzle/schema/schema";
+import { Button } from "@f/components/ui/button";
+import { Input } from "@f/components/ui/input";
+import MDEditor, { commands } from "@uiw/react-md-editor";
+import { bytesToMB } from "@f/utils/helper";
+import {
+	Command,
+	CommandEmpty,
+	CommandGroup,
+	CommandInput,
+	CommandItem,
+	CommandList,
+} from "@f/components/ui/command";
+import {
+	Popover,
+	PopoverContent,
+	PopoverTrigger,
+} from "@f/components/ui/popover";
 
-export const noteSchema = z.object({
-	patientId: z.string().min(1, "Please select a patient"),
-	patientName: z.string().optional(),
-	noteType: z.enum(["typed", "scanned"]),
-	title: z.string().min(3, "Title is required").max(20, "Title is too long"),
-	content: z
-		.string()
-		// .min(3, "Content is required")
-		// .max(1000, "Content is too long")
-		.optional(),
-});
+export const noteSchema = z
+	.object({
+		patientId: z.string().min(3, "Please select a patient"),
+		patientName: z.string().optional(),
+		noteType: z.enum(["typed", "scanned"]),
+		title: z
+			.string()
+			.min(3, "Title must be ≥ 3 characters")
+			.max(20, "First name must be ≤ 20 characters"),
+		content: z.string().optional(),
+	})
+	.refine(
+		(data) =>
+			data.noteType === "scanned" || (data.content && data.content.length >= 3),
+		{
+			message:
+				"Content is required and must be at least 3 characters for typed notes",
+			path: ["content"],
+		},
+	);
 
 export type NoteForm = z.infer<typeof noteSchema>;
 
 interface NoteInputProps {
 	patients: Patient[];
-	onAdd: (note: Note) => void;
+	onAdd: (note: Note & { file: File }) => Promise<boolean>;
+	loading: boolean;
 }
 
-const NoteInput = ({ patients, onAdd }: NoteInputProps) => {
+const NoteInput = ({ patients, onAdd, loading }: NoteInputProps) => {
 	const [uploadedFile, setUploadedFile] = useState<File | null>(null);
+	const [open, setOpen] = useState(false);
 
 	const {
 		register,
@@ -57,6 +84,7 @@ const NoteInput = ({ patients, onAdd }: NoteInputProps) => {
 	});
 
 	const noteType = watch("noteType");
+	const patientId = watch("patientId");
 	const saveNote = async (data: NoteForm) => {
 		const patient = patients.find((p) => p.id === data.patientId);
 		const attachFile = {
@@ -64,21 +92,16 @@ const NoteInput = ({ patients, onAdd }: NoteInputProps) => {
 			file: uploadedFile,
 			patientName: patient?.firstName + " " + patient?.lastName,
 		} as Note & { file: File };
-		onAdd(attachFile);
-		clearNote();
+		const success = await onAdd(attachFile);
+		if (success) {
+			clearNote();
+		}
 	};
 
 	const clearNote = () => {
 		setValue("noteType", "typed");
 		setUploadedFile(null);
 		reset();
-	};
-
-	const handleInput = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-		const el = e.target;
-		el.style.height = "auto";
-		const maxHeight = window.innerHeight * 0.4;
-		el.style.height = Math.min(el.scrollHeight, maxHeight) + "px";
 	};
 
 	const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -116,13 +139,11 @@ const NoteInput = ({ patients, onAdd }: NoteInputProps) => {
 					</div>
 				)}
 
-				{/* Wrap ALL interactive inputs inside the form */}
 				{noteType && (
 					<form
 						onSubmit={handleSubmit(saveNote)}
 						className="flex flex-col gap-2"
 					>
-						{/* Show image preview for scan type */}
 						{noteType === "scanned" &&
 							uploadedFile?.type.startsWith("image") && (
 								<div className="flex justify-center items-center">
@@ -134,7 +155,6 @@ const NoteInput = ({ patients, onAdd }: NoteInputProps) => {
 									/>
 								</div>
 							)}
-						{/* Show PDF info for scan type */}
 						{noteType === "scanned" && uploadedFile?.type.includes("pdf") && (
 							<div className="flex justify-between items-center border-2 rounded-lg px-4 py-2">
 								<div className="flex gap-2 items-center">
@@ -159,7 +179,6 @@ const NoteInput = ({ patients, onAdd }: NoteInputProps) => {
 							</div>
 						)}
 
-						{/* Title Input */}
 						<div>
 							<Input
 								type="text"
@@ -175,32 +194,64 @@ const NoteInput = ({ patients, onAdd }: NoteInputProps) => {
 							)}
 						</div>
 
-						{/* Patient select */}
-						<div>
-							<div className="w-full flex gap-1 border-1 rounded-lg p-2">
-								<select
-									className={`w-full appearance-none px-2 text-sm focus:outline-none ${
-										!noteType ? "text-gray-400" : "text-gray-700"
-									}`}
-									{...register("patientId")}
-								>
-									<option className="text-sm text-gray-400" value="">
-										--Select Patient--
-									</option>
-									{patients.map((patient) => (
-										<option key={patient.id} value={patient.id}>
-											{patient.firstName} {patient.lastName}
-										</option>
-									))}
-								</select>
-								<div
-									className={`flex items-center px-2 ${
-										!noteType ? "text-gray-400" : "text-gray-700"
-									}`}
-								>
-									<ChevronDown width={18} height={18} />
-								</div>
-							</div>
+						<div className="w-full">
+							<Popover open={open} onOpenChange={setOpen}>
+								<PopoverTrigger asChild>
+									<Button
+										variant="outline"
+										role="combobox"
+										aria-expanded={open}
+										className="justify-between hover:bg-transparent w-full"
+									>
+										{patientId ? (
+											patients.find((p) => p.id === patientId)?.firstName +
+											" " +
+											patients.find((p) => p.id === patientId)?.lastName
+										) : (
+											<span className="text-gray-400 font-normal">
+												Select a patient
+											</span>
+										)}
+										<ChevronDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+									</Button>
+								</PopoverTrigger>
+								<PopoverContent className="p-0">
+									<Command>
+										<CommandInput placeholder="Search patient..." />
+										<CommandList>
+											<CommandEmpty>No patient found.</CommandEmpty>
+											<CommandGroup>
+												{patients.map((patient) => {
+													const fullName =
+														patient.firstName + " " + patient.lastName;
+													return (
+														<CommandItem
+															key={`${patient.id}-${fullName}`}
+															value={patient.id}
+															aria-label={fullName}
+															onSelect={(currentValue) => {
+																setValue("patientId", currentValue, {
+																	shouldValidate: true,
+																});
+																setOpen(false);
+															}}
+														>
+															<Check
+																className={`mr-2 h-4 w-4 ${
+																	patientId === patient.id
+																		? "opacity-100"
+																		: "opacity-0"
+																}`}
+															/>
+															{fullName}
+														</CommandItem>
+													);
+												})}
+											</CommandGroup>
+										</CommandList>
+									</Command>
+								</PopoverContent>
+							</Popover>
 							{errors.patientId && (
 								<span className="text-red-600 text-xs">
 									{errors.patientId.message}
@@ -208,15 +259,29 @@ const NoteInput = ({ patients, onAdd }: NoteInputProps) => {
 							)}
 						</div>
 
-						{/* Content textarea for typed noteType */}
 						{noteType === "typed" && (
-							<div>
-								<textarea
-									className="border border-input rounded-lg px-4 py-2 w-full resize-none overflow-y-auto bg-white text-gray-800 leading-relaxed focus:outline-none max-h-[40vh] h-auto placeholder-gray-400"
-									placeholder="Take a note..."
-									autoFocus
-									onInput={handleInput}
-									{...register("content")}
+							<div data-color-mode="light">
+								<MDEditor
+									textareaProps={{
+										placeholder: "Take a note...",
+									}}
+									value={watch("content")}
+									preview="edit"
+									commands={[
+										commands.bold,
+										commands.italic,
+										commands.strikethrough,
+										commands.hr,
+										commands.code,
+										commands.quote,
+										commands.orderedListCommand,
+										commands.unorderedListCommand,
+										commands.checkedListCommand,
+										commands.link,
+									]}
+									onChange={(val) =>
+										setValue("content", val || "", { shouldValidate: true })
+									}
 								/>
 								{errors.content && (
 									<span className="text-red-600 text-xs">
@@ -226,20 +291,22 @@ const NoteInput = ({ patients, onAdd }: NoteInputProps) => {
 							</div>
 						)}
 
-						{/* Buttons */}
 						<div className="flex gap-2 justify-end mt-2">
 							<Button variant="secondary" onClick={clearNote} type="button">
 								Clear
 							</Button>
-							<Button type="submit" variant="primary">
-								Save
+							<Button type="submit" variant="primary" disabled={loading}>
+								{loading ? (
+									<Loader2 className="w-4 h-4 animate-spin text-black" />
+								) : (
+									<span>Save</span>
+								)}
 							</Button>
 						</div>
 					</form>
 				)}
 			</div>
 
-			{/* Overlay to clear */}
 			{noteType && (
 				<div
 					className="fixed inset-0 z-0"
