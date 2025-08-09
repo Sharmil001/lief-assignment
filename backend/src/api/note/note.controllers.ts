@@ -2,9 +2,14 @@ import { Request, Response } from "express";
 import { NoteService } from "./note.services";
 import { GlobalCache } from "../../utils/cache";
 import { Note } from "../../drizzle/schema/schema";
+import { formatNoteWithPerplexity } from "../../utils/ai";
+import {
+	extractTextFromImageBuffer,
+	extractTextFromPdfBufferWithOcrFallback,
+} from "../../utils/ocr";
 
 const notesCache = new GlobalCache<{ data: Note[]; total: number }>(
-	24 * 60 * 60 * 1000, // 1 day TTL
+	24 * 60 * 60 * 1000,
 );
 
 function clearNotesCache() {
@@ -38,6 +43,54 @@ export const NoteController = {
 		const result = await NoteService.create(req.body);
 		clearNotesCache();
 		return res.json(result);
+	},
+
+	async upload(req: Request, res: Response) {
+		try {
+			let ocrText = "";
+			const file = req.file;
+
+			if (file) {
+				if (file.mimetype === "application/pdf") {
+					ocrText = await extractTextFromPdfBufferWithOcrFallback(file.buffer);
+				} else if (file.mimetype.startsWith("image/")) {
+					ocrText = await extractTextFromImageBuffer(file.buffer);
+				} else {
+					return res.status(400).json({ error: "Unsupported file type" });
+				}
+			}
+
+			if (!ocrText) {
+				return res
+					.status(400)
+					.json({
+						error:
+							"Unable to extract text from the provided file. Try again with a different file.",
+					});
+			}
+			const formattedText = await formatNoteWithPerplexity(ocrText);
+
+			const content = formattedText || req.body.content || "";
+
+			const noteData = {
+				patientId: req.body.patientId,
+				patientName: req.body.patientName,
+				noteType: req.body.noteType,
+				title: req.body.title,
+				content,
+			};
+
+			if (!noteData.patientId || !noteData.title) {
+				return res.status(400).json({ error: "Missing required fields" });
+			}
+
+			const result = await NoteService.create(noteData as Note);
+			clearNotesCache();
+			return res.json(result);
+		} catch (error) {
+			console.error("Error in upload:", error);
+			return res.status(500).json({ error: "Failed to upload note" });
+		}
 	},
 
 	async update(req: Request, res: Response) {

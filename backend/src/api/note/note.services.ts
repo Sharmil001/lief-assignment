@@ -24,7 +24,6 @@ export const NoteService = {
 		return db.insert(notes).values(data).returning();
 	},
 	async update(id: string, data: Note) {
-		console.log(data, "service");
 		return db.update(notes).set(data).where(eq(notes.id, id)).returning();
 	},
 	async delete(id: string) {

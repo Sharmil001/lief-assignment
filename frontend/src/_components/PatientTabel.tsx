@@ -57,8 +57,6 @@ export default function PatientTable({
 		getFilteredRowModel: getFilteredRowModel(),
 	});
 
-	console.log(loading);
-
 	return (
 		<>
 			<div className="flex items-center justify-between py-4">

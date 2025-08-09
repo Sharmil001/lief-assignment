@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { bytesToMB } from "../utils/helper";
 import {
 	ArrowUpFromLine,
@@ -23,8 +23,9 @@ export const noteSchema = z.object({
 	title: z.string().min(3, "Title is required").max(20, "Title is too long"),
 	content: z
 		.string()
-		.min(3, "Content is required")
-		.max(1000, "Content is too long"),
+		// .min(3, "Content is required")
+		// .max(1000, "Content is too long")
+		.optional(),
 });
 
 export type NoteForm = z.infer<typeof noteSchema>;
@@ -35,7 +36,6 @@ interface NoteInputProps {
 }
 
 const NoteInput = ({ patients, onAdd }: NoteInputProps) => {
-	const [noteType, setNoteType] = useState("");
 	const [uploadedFile, setUploadedFile] = useState<File | null>(null);
 
 	const {
@@ -43,24 +43,33 @@ const NoteInput = ({ patients, onAdd }: NoteInputProps) => {
 		handleSubmit,
 		formState: { errors },
 		reset,
+		setValue,
+		watch,
 	} = useForm<NoteForm>({
 		resolver: zodResolver(noteSchema),
 		defaultValues: {
 			patientId: "",
 			patientName: "",
-			noteType: "typed",
+			noteType: undefined,
 			title: "",
 			content: "",
 		},
 	});
 
+	const noteType = watch("noteType");
 	const saveNote = async (data: NoteForm) => {
-		onAdd(data as Note);
+		const patient = patients.find((p) => p.id === data.patientId);
+		const attachFile = {
+			...data,
+			file: uploadedFile,
+			patientName: patient?.firstName + " " + patient?.lastName,
+		} as Note & { file: File };
+		onAdd(attachFile);
 		clearNote();
 	};
 
 	const clearNote = () => {
-		setNoteType("");
+		setValue("noteType", "typed");
 		setUploadedFile(null);
 		reset();
 	};
@@ -76,7 +85,7 @@ const NoteInput = ({ patients, onAdd }: NoteInputProps) => {
 		const file = e.target.files?.[0];
 		if (file) {
 			setUploadedFile(file);
-			setNoteType("scan");
+			setValue("noteType", "scanned");
 		}
 	};
 
@@ -87,7 +96,7 @@ const NoteInput = ({ patients, onAdd }: NoteInputProps) => {
 					<div className="w-full flex justify-between items-center">
 						<span
 							className="text-gray-400 w-full cursor-text"
-							onClick={() => setNoteType("type")}
+							onClick={() => setValue("noteType", "typed")}
 						>
 							Take a note...
 						</span>
@@ -114,18 +123,19 @@ const NoteInput = ({ patients, onAdd }: NoteInputProps) => {
 						className="flex flex-col gap-2"
 					>
 						{/* Show image preview for scan type */}
-						{noteType === "scan" && uploadedFile?.type.startsWith("image") && (
-							<div className="flex justify-center items-center">
-								<Image
-									src={URL.createObjectURL(uploadedFile)}
-									alt="uploaded-file"
-									width={200}
-									height={200}
-								/>
-							</div>
-						)}
+						{noteType === "scanned" &&
+							uploadedFile?.type.startsWith("image") && (
+								<div className="flex justify-center items-center">
+									<Image
+										src={URL.createObjectURL(uploadedFile)}
+										alt="uploaded-file"
+										width={200}
+										height={200}
+									/>
+								</div>
+							)}
 						{/* Show PDF info for scan type */}
-						{noteType === "scan" && uploadedFile?.type.includes("pdf") && (
+						{noteType === "scanned" && uploadedFile?.type.includes("pdf") && (
 							<div className="flex justify-between items-center border-2 rounded-lg px-4 py-2">
 								<div className="flex gap-2 items-center">
 									<ClipboardMinus width={24} height={24} />
@@ -156,7 +166,7 @@ const NoteInput = ({ patients, onAdd }: NoteInputProps) => {
 								{...register("title")}
 								variant="default"
 								placeholder="Title"
-								autoFocus={noteType === "scan"}
+								autoFocus={noteType === "scanned"}
 							/>
 							{errors.title && (
 								<span className="text-red-600 text-xs">
@@ -199,7 +209,7 @@ const NoteInput = ({ patients, onAdd }: NoteInputProps) => {
 						</div>
 
 						{/* Content textarea for typed noteType */}
-						{noteType === "type" && (
+						{noteType === "typed" && (
 							<div>
 								<textarea
 									className="border border-input rounded-lg px-4 py-2 w-full resize-none overflow-y-auto bg-white text-gray-800 leading-relaxed focus:outline-none max-h-[40vh] h-auto placeholder-gray-400"

@@ -8,6 +8,7 @@ import {
 	deleteNote,
 	fetchNotesWithPagination,
 	updateNote,
+	uploadNote,
 } from "@f/lib/note-apis";
 import { fetchPatients } from "@f/lib/patient-apis";
 import { useEffect, useState } from "react";
@@ -61,14 +62,19 @@ const Notes = () => {
 			page: p.page * p.limit < p.total ? p.page + 1 : p.page,
 		}));
 
-	const saveNote = async (note: Note) => {
+	const saveNote = async (note: Note & { file: File }) => {
 		try {
 			setLoading("saving");
 			const patient = patients.find((p) => p.id === note.patientId);
 			if (patient) {
 				note.patientName = patient.firstName + " " + patient.lastName;
 			}
-			const [data] = await addNote(note as Note);
+
+			if (note.noteType === "typed") {
+				await addNote(note as Note);
+			} else {
+				await uploadNote(note);
+			}
 
 			const { page, limit } = pagination;
 			const { data: updatedNotes, total } = await fetchNotesWithPagination(

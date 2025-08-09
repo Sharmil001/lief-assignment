@@ -61,7 +61,6 @@ const hashStringToNumber = (str: string): number => {
 };
 
 export const getLightBgAndShadowForPatient = (id: string) => {
-	console.log(id);
 	if (colorCache.has(id)) {
 		const cachedIndex = colorCache.get(id)!;
 		return {

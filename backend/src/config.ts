@@ -13,6 +13,7 @@ const Config = z
 		DB_USER: z.string(),
 		DATABASE_CONNECTION: z.string(),
 		PORT: z.string(),
+		PERPLEXITY_API_KEY: z.string(),
 	})
 	.readonly();
 

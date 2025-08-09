@@ -63,7 +63,7 @@ const NoteList = (props: NoteListProps) => {
 				</div>
 			</section>
 
-			{props.notes?.length && (
+			{props.notes?.length > 0 && (
 				<div className="flex items-center justify-end space-x-2 py-4">
 					<div className="text-muted-foreground flex-1 text-sm">
 						Page {page} of {Math.ceil(total / limit)}

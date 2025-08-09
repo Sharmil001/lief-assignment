@@ -1,12 +1,14 @@
+"use client";
 import { CircleUser, LogOut } from "lucide-react";
-// import Button from "./Button";
-import { redirect } from "next/navigation";
+import { redirect, usePathname } from "next/navigation";
 import Image from "next/image";
 import { Button } from "../components/ui/button";
 
 const Header = () => {
+	const pathname = usePathname();
+
 	const logOut = () => {
-		// console.log("logout");
+		// handle logout logic here if any
 		redirect("/login");
 	};
 
@@ -21,19 +23,22 @@ const Header = () => {
 							</a>
 						</div>
 						<div className="flex gap-4">
-							<div className="flex gap-2">
-								<a
-									href="/patients"
-									className="font-semibold hover:text-amber-600"
-								>
-									Patients
-								</a>
-							</div>
-							<div className="flex gap-2">
-								<a href="/notes" className="font-semibold hover:text-amber-600">
-									Notes
-								</a>
-							</div>
+							<a
+								href="/patients"
+								className={`font-semibold hover:text-amber-600 ${
+									pathname === "/patients" ? "text-amber-600 underline" : ""
+								}`}
+							>
+								Patients
+							</a>
+							<a
+								href="/notes"
+								className={`font-semibold hover:text-amber-600 ${
+									pathname === "/notes" ? "text-amber-600 underline" : ""
+								}`}
+							>
+								Notes
+							</a>
 						</div>
 					</div>
 					<div className="flex gap-2 items-center">
@@ -41,7 +46,7 @@ const Header = () => {
 							<CircleUser />
 							<div className="font-semibold">Hi, Sharmil!</div>
 						</div>
-						<Button name="Logout" variant="primary">
+						<Button onClick={logOut} variant="primary">
 							<LogOut width={18} height={18} />
 							<span>Logout</span>
 						</Button>

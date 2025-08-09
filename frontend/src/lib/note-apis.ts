@@ -27,21 +27,20 @@ export async function addNote(note: Note) {
 	return res.json();
 }
 
-export async function uploadNote(note: Note, file?: File) {
+export async function uploadNote(note: Note & { file?: File }) {
 	const formData = new FormData();
 
-	// Append form fields
-	formData.append("patientId", note.patientId);
-	formData.append("noteType", note.noteType);
-	formData.append("title", note.title);
-	formData.append("content", note.content);
+	formData.append("patientId", String(note.patientId || ""));
+	formData.append("patientName", String(note.patientName || ""));
+	formData.append("noteType", String(note.noteType));
+	formData.append("title", String(note.title || ""));
+	formData.append("content", String(note.content || ""));
 
-	// Append file if exists
-	if (file) {
-		formData.append("file", file);
+	if (note.file instanceof File) {
+		formData.append("file", note.file);
 	}
 
-	const res = await fetch(`${API_URL}/notes`, {
+	const res = await fetch(`${API_URL}/notes/upload`, {
 		method: "POST",
 		body: formData,
 	});

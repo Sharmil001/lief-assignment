@@ -6,6 +6,12 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Label } from "@f/components/ui/label";
 import { Input } from "@f/components/ui/input";
 import { ChevronDown } from "lucide-react";
+import dynamic from "next/dynamic";
+import "@uiw/react-md-editor/markdown-editor.css";
+import "@uiw/react-markdown-preview/markdown.css";
+import { commands } from "@uiw/react-md-editor";
+
+const MDEditor = dynamic(() => import("@uiw/react-md-editor"), { ssr: false });
 
 type NoteModalProps = {
 	patients: Patient[];
@@ -20,6 +26,8 @@ const NoteModal = ({ patients, note, onUpdate, onCancel }: NoteModalProps) => {
 		handleSubmit,
 		formState: { errors },
 		reset,
+		setValue,
+		watch,
 	} = useForm<NoteForm>({
 		resolver: zodResolver(noteSchema),
 		defaultValues: {
@@ -125,13 +133,25 @@ const NoteModal = ({ patients, note, onUpdate, onCancel }: NoteModalProps) => {
 
 					<div className="space-y-2">
 						<Label htmlFor="description">Description</Label>
-						<div>
-							<textarea
-								className="border border-input rounded-lg px-4 py-2 w-full min-h-50 resize-none overflow-y-auto bg-white text-gray-800 leading-relaxed focus:outline-none max-h-[40vh] h-auto placeholder-gray-400"
-								placeholder="Take a note..."
-								autoFocus
-								onInput={handleInput}
-								{...register("content")}
+						<div data-color-mode="light">
+							<MDEditor
+								value={watch("content")}
+								preview="preview"
+								commands={[
+									commands.bold,
+									commands.italic,
+									commands.strikethrough,
+									commands.hr,
+									commands.code,
+									commands.quote,
+									commands.orderedListCommand,
+									commands.unorderedListCommand,
+									commands.checkedListCommand,
+									commands.link, // intentionally skipping commands.image
+								]}
+								onChange={(val) =>
+									setValue("content", val || "", { shouldValidate: true })
+								}
 							/>
 							{errors.content && (
 								<span className="text-red-600 text-xs">
