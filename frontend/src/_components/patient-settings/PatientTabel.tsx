@@ -21,7 +21,7 @@ import {
 	useReactTable,
 } from "@tanstack/react-table";
 import { usePatientColumns } from "./PatientColunms";
-import { LoadingState } from "@f/app/patients/page";
+import { LoadingState } from "@f/app/n4d/patients/page";
 
 interface Props {
 	patients: Patient[];

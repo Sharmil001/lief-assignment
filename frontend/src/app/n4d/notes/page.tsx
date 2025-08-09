@@ -37,7 +37,6 @@ const Notes = () => {
 		setLoading("fetchPatients");
 		fetchPatients()
 			.then((res) => setPatients(res ?? []))
-			.catch((err) => console.error(err))
 			.finally(() => setLoading(null));
 	}, []);
 
@@ -50,7 +49,7 @@ const Notes = () => {
 			})
 			.catch(console.error)
 			.finally(() => setLoading(null));
-	}, [pagination.page, pagination.limit]);
+	}, [pagination]);
 
 	const prevPage = () => {
 		setLoading("fetchPrevNotes");

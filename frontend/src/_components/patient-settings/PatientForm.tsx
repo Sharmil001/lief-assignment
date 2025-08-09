@@ -44,7 +44,7 @@ interface PatientFormDialogProps {
 	open: boolean;
 	mode: "edit" | "create";
 	patient?: Patient;
-	onSubmit: (p: any) => void;
+	onSubmit: (p: PatientSchemaType) => void;
 	onCancel: () => void;
 	OpenChange: () => void;
 	loading: LoadingState;

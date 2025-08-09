@@ -40,7 +40,7 @@ const Login = () => {
 
 			setIsLoading(false);
 		} catch (error) {
-			toast.error("Failed to login. Please try again later.");
+			toast.error(`Failed to login: \n${error}`);
 			setIsLoading(false);
 		}
 	};
