@@ -1,4 +1,6 @@
-<img width="500" height="500" alt="ChatGPT Image Aug 7 2025 from Tech Stack Recommendation" src="https://github.com/user-attachments/assets/18a098cf-18a9-4ba8-84b5-d6d255f88b04" />
+<div align="center">
+    <img width="360" height="360" alt="ChatGPT Image Aug 7 2025 from Tech Stack Recommendation" src="https://github.com/user-attachments/assets/18a098cf-18a9-4ba8-84b5-d6d255f88b04" />
+</div>
 
 # Note For Doc (Note4Doc)
 ⚡ This project implements a **Patient Case Notes System** designed for NHS doctors to:
