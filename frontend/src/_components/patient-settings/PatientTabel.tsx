@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { Patient } from "@b/drizzle/schema/schema";
+import type { Patient } from "@b/drizzle/schema/schema";
 import {
 	Table,
 	TableBody,

@@ -1,4 +1,4 @@
-import { Note, Patient } from "@b/drizzle/schema/schema";
+import type { Note, Patient } from "@b/drizzle/schema/schema";
 import { Button } from "@f/components/ui/button";
 import { useForm } from "react-hook-form";
 import { NoteForm, noteSchema } from "./NoteInput";

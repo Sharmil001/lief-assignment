@@ -1,4 +1,4 @@
-import { Patient } from "@b/drizzle/schema/schema";
+import type { Patient } from "@b/drizzle/schema/schema";
 import {
 	DialogHeader,
 	DialogTitle,

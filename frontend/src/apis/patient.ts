@@ -1,4 +1,4 @@
-import { Patient } from "@b/drizzle/schema/schema";
+import type { Patient } from "@b/drizzle/schema/schema";
 import { PatientSchemaType } from "@f/_components/patient-settings/PatientForm";
 import { toast } from "react-toastify";
 

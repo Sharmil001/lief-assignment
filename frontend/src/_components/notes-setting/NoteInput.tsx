@@ -13,7 +13,7 @@ import {
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Note, Patient } from "@b/drizzle/schema/schema";
+import type { Note, Patient } from "@b/drizzle/schema/schema";
 import { Button } from "@f/components/ui/button";
 import { Input } from "@f/components/ui/input";
 import MDEditor, { commands } from "@uiw/react-md-editor";

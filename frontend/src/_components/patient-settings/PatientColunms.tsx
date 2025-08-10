@@ -1,7 +1,7 @@
 "use client";
 
 import { format } from "date-fns";
-import { Patient } from "@b/drizzle/schema/schema";
+import type { Patient } from "@b/drizzle/schema/schema";
 import { Button } from "@f/components/ui/button";
 import { ArrowUpDown } from "lucide-react";
 import { ColumnDef } from "@tanstack/react-table";

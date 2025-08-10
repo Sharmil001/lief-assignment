@@ -1,6 +1,6 @@
 "use client";
 
-import { Note, Patient } from "@b/drizzle/schema/schema";
+import type { Note, Patient } from "@b/drizzle/schema/schema";
 import NoteList from "@f/_components/notes-setting/NoteList";
 import NoteInput from "@f/_components/notes-setting/NoteInput";
 import {

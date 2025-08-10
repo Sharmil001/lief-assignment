@@ -1,4 +1,4 @@
-import { Note } from "@b/drizzle/schema/schema";
+import type { Note } from "@b/drizzle/schema/schema";
 import { cn } from "@f/lib/utils";
 import { formatDate } from "date-fns";
 import { Clock, NotebookPen, Pin, Trash, UserRound } from "lucide-react";

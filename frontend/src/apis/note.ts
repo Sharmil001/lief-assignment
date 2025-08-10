@@ -1,4 +1,4 @@
-import { Note } from "@b/drizzle/schema/schema";
+import type { Note } from "@b/drizzle/schema/schema";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 

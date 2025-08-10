@@ -1,7 +1,7 @@
 "use client";
 import { ChevronLeft, ChevronRight, Loader2 } from "lucide-react";
 import { useState } from "react";
-import { Note, Patient } from "@b/drizzle/schema/schema";
+import type { Note, Patient } from "@b/drizzle/schema/schema";
 import NoteModal from "./NoteModel";
 import NoteCard from "./NotesCard";
 import { getLightBgAndShadowForPatient } from "@f/utils/color-mapper";
