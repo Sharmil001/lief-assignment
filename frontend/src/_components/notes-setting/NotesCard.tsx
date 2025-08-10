@@ -72,7 +72,9 @@ const NoteCard = ({
 						)}
 					>
 						<UserRound className="w-4 h-4 mr-1" />
-						<span>{note.patientName}</span>
+						<span className="truncate max-w-full md:max-w-[5rem] lg:max-w-full overflow-hidden whitespace-nowrap">
+							{note.patientName}
+						</span>
 					</div>
 				</div>
 			</div>

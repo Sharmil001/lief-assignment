@@ -132,6 +132,12 @@ body {
   column-gap: 1rem;
 }
 
+@media (max-width: 1024px) {
+  .masonry-container {
+    column-count: 3;
+  }
+}
+
 @media (max-width: 768px) {
   .masonry-container {
     column-count: 1;

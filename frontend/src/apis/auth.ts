@@ -16,6 +16,7 @@ export async function logout() {
 		method: "POST",
 		credentials: "include",
 	});
+	localStorage.removeItem("token");
 	if (!res.ok) throw new Error("Failed to logout");
 	return res.json();
 }

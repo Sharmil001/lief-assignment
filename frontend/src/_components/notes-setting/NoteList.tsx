@@ -35,41 +35,49 @@ const NoteList = (props: NoteListProps) => {
 	return (
 		<div className="container mx-auto py-3">
 			<section className="mb-6">
-				{props.pagination.total === undefined && (
-					<div className="flex justify-center items-center">
+				{props.loading === "fetchNotes" && (
+					<div className="flex justify-center items-center min-h-[40vh]">
 						<Loader2 className="w-8 h-8 animate-spin text-black" />
 					</div>
 				)}
-				<div className="py-3 masonry-container">
-					{props.notes?.map((note) => {
-						const patient = props.patients.find((p) => p.id === note.patientId);
-						const bgColorClass = patient
-							? getLightBgAndShadowForPatient(patient.id)
-							: {
-									bgColorClass: "bg-white",
-									shadowClass: "hover:shadow-[8px_8px_0px_rgba(0,0,0,0.1)]",
-									darkBgClass: "text-black",
-									darkBorderClass: "border-black",
-								};
 
-						return (
-							<NoteCard
-								key={note.id}
-								note={note}
-								bgColorClass={bgColorClass}
-								onEdit={() => setNote(note)}
-								onDelete={props.onDelete}
-							/>
-						);
-					})}
-				</div>
-				{props.pagination.total === 0 && (
+				{/* Empty state */}
+				{!props.loading && props.pagination.total === 0 && (
 					<div className="flex justify-center items-center min-h-[40vh]">
 						<div className="text-center">
-							<div className="text-gray-400 text-1xl font-semibold">
+							<div className="text-gray-400 text-lg font-semibold">
 								:) No notes found
 							</div>
 						</div>
+					</div>
+				)}
+
+				{/* Notes list */}
+				{!props.loading && props.pagination.total > 0 && (
+					<div className="py-3 masonry-container">
+						{props.notes.map((note) => {
+							const patient = props.patients.find(
+								(p) => p.id === note.patientId,
+							);
+							const bgColorClass = patient
+								? getLightBgAndShadowForPatient(patient.id)
+								: {
+										bgColorClass: "bg-white",
+										shadowClass: "hover:shadow-[8px_8px_0px_rgba(0,0,0,0.1)]",
+										darkBgClass: "text-black",
+										darkBorderClass: "border-black",
+									};
+
+							return (
+								<NoteCard
+									key={note.id}
+									note={note}
+									bgColorClass={bgColorClass}
+									onEdit={() => setNote(note)}
+									onDelete={props.onDelete}
+								/>
+							);
+						})}
 					</div>
 				)}
 			</section>

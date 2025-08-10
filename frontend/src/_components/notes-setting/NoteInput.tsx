@@ -213,7 +213,7 @@ const NoteInput = ({
 								{...register("title")}
 								variant="default"
 								placeholder="Title"
-								autoFocus={noteType === "scanned"}
+								autoFocus
 							/>
 							{errors.title && (
 								<span className="text-red-600 text-xs">
