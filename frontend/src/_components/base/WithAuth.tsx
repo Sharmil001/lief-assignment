@@ -1,9 +1,12 @@
 "use client";
+
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 
-export default function withAuth(Component: React.FC) {
-	return function ProtectedRoute(props: any) {
+export default function withAuth<P extends object>(
+	Component: React.ComponentType<P>,
+) {
+	return function ProtectedRoute(props: P) {
 		const router = useRouter();
 
 		useEffect(() => {
