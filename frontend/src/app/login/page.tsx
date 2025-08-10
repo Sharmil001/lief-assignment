@@ -37,7 +37,7 @@ const Login = () => {
 			if (res) {
 				router.push("/n4d/patients");
 			}
-
+			localStorage.setItem("token", res.token);
 			setIsLoading(false);
 		} catch (error) {
 			toast.error(`Failed to login: \n${error}`);

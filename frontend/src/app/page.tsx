@@ -1,8 +1,7 @@
-import { authenticated } from "@f/utils/auth";
 import { redirect } from "next/navigation";
 
 export default function Home() {
-	const token = authenticated();
+	const token = localStorage.getItem("token");
 	console.log(token, "Log: Root Token");
 
 	if (!token) {

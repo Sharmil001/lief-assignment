@@ -31,7 +31,7 @@ router.post("/login", (req: Request, res: Response) => {
 			path: "/",
 		});
 
-		return res.json({ message: "Logged in successfully" });
+		return res.json({ message: "Logged in successfully", token });
 	}
 	return res.status(401).json({ error: "Invalid email or password" });
 });

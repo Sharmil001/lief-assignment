@@ -2,8 +2,9 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
 export function middleware(req: NextRequest) {
-	const token = req.cookies.get("token")?.value;
+	// const token = req.cookies.get("token")?.value;
 	const url = req.nextUrl.clone();
+	const token = localStorage.getItem("token");
 	console.log(token, "Log: Token");
 
 	if (!token && !url.pathname.startsWith("/login")) {
