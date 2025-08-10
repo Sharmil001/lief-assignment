@@ -1,4 +1,4 @@
-import { desc, eq, sql } from "drizzle-orm";
+import { desc, eq, sql, or, ilike } from "drizzle-orm";
 import { db } from "../../drizzle/db";
 import { Note, notes } from "../../drizzle/schema/schema";
 
@@ -6,15 +6,35 @@ export const NoteService = {
 	async getAll() {
 		return db.select().from(notes);
 	},
-	async getAllWithPagination(_: number, limit: number, offset: number) {
-		const totalResult = await db.select({ count: sql`count(*)` }).from(notes);
+	async getAllWithPagination(
+		_: number,
+		limit: number,
+		offset: number,
+		filter?: string,
+	) {
+		const whereClause = filter
+			? or(
+					ilike(notes.patientName, `%${filter}%`),
+					ilike(notes.title, `%${filter}%`),
+					ilike(notes.content, `%${filter}%`),
+				)
+			: undefined;
+
+		const totalResult = await db
+			.select({ count: sql<number>`count(*)` })
+			.from(notes)
+			.where(whereClause ?? sql`true`);
+
 		const total = Number(totalResult[0]?.count ?? 0);
+
 		const data = await db
 			.select()
 			.from(notes)
+			.where(whereClause ?? sql`true`)
+			.orderBy(desc(notes.createdAt))
 			.limit(limit)
-			.offset(offset)
-			.orderBy(desc(notes.createdAt));
+			.offset(offset);
+
 		return { data, total };
 	},
 	async getByPatientId(patientId: string) {

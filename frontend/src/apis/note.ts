@@ -10,9 +10,12 @@ export async function fetchNotes(): Promise<Note[]> {
 
 export async function fetchNotesWithPagination(
 	page = 1,
-	limit = 5,
+	limit = 10,
+	filter?: string,
 ): Promise<{ data: Note[]; total: number }> {
-	const res = await fetch(`${API_URL}/notes/?page=${page}&limit=${limit}`);
+	const res = await fetch(
+		`${API_URL}/notes/?page=${page}&limit=${limit}&filter=${filter}`,
+	);
 	if (!res.ok) throw new Error("Failed to fetch notes");
 	return res.json();
 }

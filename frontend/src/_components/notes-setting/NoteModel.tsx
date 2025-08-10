@@ -133,13 +133,16 @@ const NoteModal = ({
 												{patients.map((patient) => {
 													const fullName =
 														patient.firstName + " " + patient.lastName;
+													{
+														JSON.stringify(patient);
+													}
 													return (
 														<CommandItem
-															key={`${patient.id}-${fullName}`}
-															value={patient.id}
+															key={patient.id}
+															value={`${patient.id} ${fullName.toLowerCase()}`}
 															aria-label={fullName}
-															onSelect={(currentValue) => {
-																setValue("patientId", currentValue, {
+															onSelect={() => {
+																setValue("patientId", patient.id, {
 																	shouldValidate: true,
 																});
 																setOpen(false);

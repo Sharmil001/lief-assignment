@@ -33,9 +33,9 @@ const NoteList = (props: NoteListProps) => {
 	};
 
 	return (
-		<div className="container mx-auto py-3 mt-8">
+		<div className="container mx-auto py-3">
 			<section className="mb-6">
-				{!props.pagination.total && (
+				{props.pagination.total === undefined && (
 					<div className="flex justify-center items-center">
 						<Loader2 className="w-8 h-8 animate-spin text-black" />
 					</div>
@@ -63,6 +63,15 @@ const NoteList = (props: NoteListProps) => {
 						);
 					})}
 				</div>
+				{props.pagination.total === 0 && (
+					<div className="flex justify-center items-center min-h-[40vh]">
+						<div className="text-center">
+							<div className="text-gray-400 text-1xl font-semibold">
+								:) No notes found
+							</div>
+						</div>
+					</div>
+				)}
 			</section>
 
 			{props.notes?.length > 0 && (

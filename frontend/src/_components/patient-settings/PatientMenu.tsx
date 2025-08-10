@@ -36,9 +36,7 @@ export default function PatientActionsMenu({
 				<DropdownMenuItem onClick={() => onDelete(patient.id)}>
 					Delete
 				</DropdownMenuItem>
-				<DropdownMenuItem
-					onClick={() => redirect(`/notes?patient=${patient.id}`)}
-				>
+				<DropdownMenuItem onClick={() => redirect(`/n4d/notes`)}>
 					Add Notes
 				</DropdownMenuItem>
 			</DropdownMenuContent>

@@ -7,7 +7,9 @@ import {
 	Check,
 	ChevronDown,
 	ClipboardMinus,
+	ListFilter,
 	Loader2,
+	Search,
 	Trash,
 } from "lucide-react";
 import { z } from "zod";
@@ -59,11 +61,20 @@ interface NoteInputProps {
 	patients: Patient[];
 	onAdd: (note: Note & { file: File }) => Promise<boolean>;
 	loading: boolean;
+	searchTerm: string;
+	setSearchTerm: (term: string) => void;
 }
 
-const NoteInput = ({ patients, onAdd, loading }: NoteInputProps) => {
+const NoteInput = ({
+	patients,
+	onAdd,
+	loading,
+	setSearchTerm,
+	searchTerm,
+}: NoteInputProps) => {
 	const [uploadedFile, setUploadedFile] = useState<File | null>(null);
 	const [open, setOpen] = useState(false);
+	const [showFilter, setShowFilter] = useState(false);
 
 	const {
 		register,
@@ -101,6 +112,7 @@ const NoteInput = ({ patients, onAdd, loading }: NoteInputProps) => {
 	const clearNote = () => {
 		setValue("noteType", "typed");
 		setUploadedFile(null);
+		setShowFilter(false);
 		reset();
 	};
 
@@ -113,9 +125,9 @@ const NoteInput = ({ patients, onAdd, loading }: NoteInputProps) => {
 	};
 
 	return (
-		<div className="w-full lg:w-4/6">
+		<div className="flex gap-4 items-center w-full lg:w-4/6">
 			<div className="w-full px-4 py-3 border-2 border-black rounded-lg z-1 bg-white relative shadow-[3px_3px_0px_rgba(0,0,0,1)]">
-				{!noteType && (
+				{!noteType && !showFilter && (
 					<div className="w-full flex justify-between items-center">
 						<span
 							className="text-gray-400 w-full cursor-text"
@@ -123,19 +135,35 @@ const NoteInput = ({ patients, onAdd, loading }: NoteInputProps) => {
 						>
 							Take a note...
 						</span>
-						<label className="cursor-pointer">
-							<div className="flex gap-1 items-center focus:outline-none hover:bg-gray-100 p-2 cursor-pointer rounded-lg">
-								<ArrowUpFromLine width={18} height={18} />
-								<span className="font-semibold">Upload</span>
+						<div className="flex gap-2 items-center">
+							<label className="cursor-pointer">
+								<div className="flex gap-1 items-center focus:outline-none hover:bg-gray-100 p-2 cursor-pointer rounded-lg">
+									<ArrowUpFromLine width={18} height={18} />
+									<span className="font-semibold">Upload</span>
+								</div>
+								<Input
+									type="file"
+									variant="primary"
+									onChange={handleFileChange}
+									accept="image/*,application/pdf"
+									className="hidden"
+								/>
+							</label>
+
+							<div
+								className="flex gap-1 items-center focus:outline-none hover:bg-gray-100 p-2 cursor-pointer rounded-lg"
+								onClick={() =>
+									!searchTerm.trim()
+										? setShowFilter(!showFilter)
+										: setSearchTerm("")
+								}
+							>
+								<ListFilter width={18} height={18} />
+								<span className="font-semibold">
+									{searchTerm ? "Clear" : "Filter"}
+								</span>
 							</div>
-							<Input
-								type="file"
-								variant="primary"
-								onChange={handleFileChange}
-								accept="image/*,application/pdf"
-								className="hidden"
-							/>
-						</label>
+						</div>
 					</div>
 				)}
 
@@ -226,11 +254,11 @@ const NoteInput = ({ patients, onAdd, loading }: NoteInputProps) => {
 														patient.firstName + " " + patient.lastName;
 													return (
 														<CommandItem
-															key={`${patient.id}-${fullName}`}
-															value={patient.id}
+															key={patient.id}
+															value={`${patient.id} ${fullName.toLowerCase()}`}
 															aria-label={fullName}
-															onSelect={(currentValue) => {
-																setValue("patientId", currentValue, {
+															onSelect={() => {
+																setValue("patientId", patient.id, {
 																	shouldValidate: true,
 																});
 																setOpen(false);
@@ -305,9 +333,35 @@ const NoteInput = ({ patients, onAdd, loading }: NoteInputProps) => {
 						</div>
 					</form>
 				)}
+				{showFilter && (
+					<div className="flex flex-col">
+						<div className="relative w-1/3 mb-2">
+							<Search className="absolute left-3 top-1/2 -translate-y-1/2 text-foreground h-4 w-4" />
+							<Input
+								className="w-full p-4 pl-10 rounded-lg border-none"
+								placeholder="Search notes..."
+								value={searchTerm}
+								onChange={(e) => setSearchTerm(e.target.value)}
+								autoFocus
+							/>
+						</div>
+						<div className="flex gap-2 justify-end mt-2">
+							<Button
+								variant="primary"
+								onClick={() => {
+									clearNote();
+									setSearchTerm("");
+								}}
+								type="button"
+							>
+								Clear
+							</Button>
+						</div>
+					</div>
+				)}
 			</div>
 
-			{noteType && (
+			{(noteType || showFilter) && (
 				<div
 					className="fixed inset-0 z-0"
 					onClick={clearNote}

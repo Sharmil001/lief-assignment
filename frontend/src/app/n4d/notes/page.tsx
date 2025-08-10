@@ -14,6 +14,7 @@ import { fetchPatients } from "@f/apis/patient";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import withAuth from "@f/_components/base/WithAuth";
+import { useDebounce } from "use-debounce";
 
 export type LoadingState =
 	| null
@@ -33,6 +34,8 @@ const Notes = () => {
 		limit: 10,
 		total: 0,
 	});
+	const [searchTerm, setSearchTerm] = useState("");
+	const [debouncedSearch] = useDebounce(searchTerm, 500);
 
 	useEffect(() => {
 		setLoading("fetchPatients");
@@ -44,16 +47,14 @@ const Notes = () => {
 	useEffect(() => {
 		const { page, limit } = pagination;
 		setLoading("fetchNotes");
-		fetchNotesWithPagination(page, limit)
+		fetchNotesWithPagination(page, limit, debouncedSearch)
 			.then(({ data, total }) => {
 				setNotes(data);
-				setPagination((prev) =>
-					prev.total === total ? prev : { ...prev, total },
-				);
+				setPagination((prev) => ({ ...prev, total }));
 			})
 			.catch(console.error)
 			.finally(() => setLoading(null));
-	}, [pagination.page, pagination.limit]);
+	}, [pagination.page, pagination.limit, debouncedSearch]);
 
 	const prevPage = () => {
 		setLoading("fetchPrevNotes");
@@ -89,6 +90,7 @@ const Notes = () => {
 			const { data: updatedNotes, total } = await fetchNotesWithPagination(
 				page,
 				limit,
+				"",
 			);
 			setNotes(updatedNotes);
 			setPagination((prev) => ({ ...prev, total }));
@@ -111,9 +113,11 @@ const Notes = () => {
 			const { data: updatedNotes, total } = await fetchNotesWithPagination(
 				page,
 				limit,
+				"",
 			);
 			setNotes(updatedNotes);
 			setPagination((prev) => ({ ...prev, total }));
+			setSearchTerm("");
 			toast.success("Note updated successfully");
 			return true;
 		} catch (err) {
@@ -147,11 +151,13 @@ const Notes = () => {
 	return (
 		<div className="flex flex-col items-center h-screen">
 			<div className="container mx-auto px-4 md:px-8 py-3">
-				<div className="flex justify-center items-center mt-4">
+				<div className="flex justify-center items-center mt-2 mb-4">
 					<NoteInput
 						patients={patients}
 						onAdd={saveNote}
 						loading={loading === "saving"}
+						searchTerm={searchTerm}
+						setSearchTerm={setSearchTerm}
 					/>
 				</div>
 

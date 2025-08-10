@@ -12,7 +12,7 @@ const Header = () => {
 
 	const onLogOut = async () => {
 		await logout();
-		router.push("/");
+		router.push("/login");
 	};
 
 	return (

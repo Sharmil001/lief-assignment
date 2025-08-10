@@ -20,8 +20,9 @@ export const NoteController = {
 	async getAllWithPagination(req: Request, res: Response) {
 		const page = Number(req.query.page) || 1;
 		const limit = Number(req.query.limit) || 5;
+		const filter = req.query.filter as string;
 
-		const cacheKey = `notes_page_${page}_limit_${limit}`;
+		const cacheKey = `notes_page_${page}_limit_${limit}_filter_${filter || ""}`;
 		const cached = notesCache.get(cacheKey);
 		if (cached) {
 			console.log(`Serving from cache for key: ${cacheKey}`);
@@ -29,7 +30,12 @@ export const NoteController = {
 		}
 
 		const offset = (page - 1) * limit;
-		const result = await NoteService.getAllWithPagination(page, limit, offset);
+		const result = await NoteService.getAllWithPagination(
+			page,
+			limit,
+			offset,
+			filter,
+		);
 
 		if (result && result.data) {
 			const clone = JSON.parse(JSON.stringify(result));
@@ -61,12 +67,10 @@ export const NoteController = {
 			}
 
 			if (!ocrText) {
-				return res
-					.status(400)
-					.json({
-						error:
-							"Unable to extract text from the provided file. Try again with a different file.",
-					});
+				return res.status(400).json({
+					error:
+						"Unable to extract text from the provided file. Try again with a different file.",
+				});
 			}
 			const formattedText = await formatNoteWithPerplexity(ocrText);
 
