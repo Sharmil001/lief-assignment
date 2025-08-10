@@ -53,14 +53,14 @@
 Create a `.env` file inside the `backend` folder with the following variables:
 ```env
 APP_FRONTEND_ENDPOINT=""         # URL of the frontend application
-APP_DB_PASSWORD="r"              # Database password
+APP_DB_PASSWORD=""              # Database password
 APP_DB_HOST=""                   # Database host address
 APP_DB_NAME=""                   # Database name
 APP_DB_PORT=""                   # Database port
 APP_DB_SSL=""                    # Enable SSL for DB connection (true/false)
 APP_DB_USER=""                   # Database username
 APP_DATABASE_CONNECTION=""       # Full database connection string (optional)
-APP_PORT="3001"                  # Backend server port
+APP_PORT=""                  # Backend server port
 APP_PERPLEXITY_API_KEY=          # API key for Perplexity AI service
 APP_JWT_SECRET=                  # Secret key for JWT authentication
 APP_NODE_ENV=                    # Environment (development/production)
