@@ -5,7 +5,7 @@
 > Manually type patient case notes
 > Upload scanned case notes (images or PDFs, handwritten or typed) that are automatically transcribed using OCR/AI
 
-##✨ Features
+## ✨ Features
 ### 📝 Case Notes Input
 - **Manual entry:** Doctors can type patient case notes easily through a user-friendly web interface.  
 - **Scanned uploads:** Support for uploading scanned case notes in **image (JPEG, PNG)** and **PDF** formats.
