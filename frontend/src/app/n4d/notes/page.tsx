@@ -43,14 +43,17 @@ const Notes = () => {
 
 	useEffect(() => {
 		const { page, limit } = pagination;
+		setLoading("fetchNotes");
 		fetchNotesWithPagination(page, limit)
 			.then(({ data, total }) => {
 				setNotes(data);
-				setPagination((prev) => ({ ...prev, total }));
+				setPagination((prev) =>
+					prev.total === total ? prev : { ...prev, total },
+				);
 			})
 			.catch(console.error)
 			.finally(() => setLoading(null));
-	}, [pagination]);
+	}, [pagination.page, pagination.limit]);
 
 	const prevPage = () => {
 		setLoading("fetchPrevNotes");
