@@ -11,7 +11,7 @@ export function middleware(req: NextRequest) {
 	}
 
 	if (token && url.pathname === "/login") {
-		url.pathname = "/";
+		url.pathname = "/n4d/patients";
 		return NextResponse.redirect(url);
 	}
 
