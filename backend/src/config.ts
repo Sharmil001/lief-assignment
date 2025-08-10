@@ -15,6 +15,7 @@ const Config = z
 		PORT: z.string(),
 		PERPLEXITY_API_KEY: z.string(),
 		JWT_SECRET: z.string(),
+		NODE_ENV: z.enum(["development", "production"]),
 	})
 	.readonly();
 
