@@ -35,7 +35,7 @@ const Login = () => {
 		try {
 			const res = await login(data);
 			if (res) {
-				router.push("/");
+				router.push("/n4d/patients");
 			}
 
 			setIsLoading(false);
