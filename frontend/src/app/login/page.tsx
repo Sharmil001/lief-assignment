@@ -34,8 +34,9 @@ const Login = () => {
 		setIsLoading(true);
 		try {
 			const res = await login(data);
+			localStorage.setItem("token", res.token);
 			if (res) {
-				router.push("/n4d/patients");
+				router.push("/");
 			}
 			setIsLoading(false);
 		} catch (error) {

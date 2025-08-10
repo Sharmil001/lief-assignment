@@ -1,12 +1,12 @@
-import { authenticated } from "@f/utils/auth";
+"use client";
 import { redirect } from "next/navigation";
 
 export default function Home() {
-	const token = authenticated();
+	const token = localStorage.getItem("token");
 	console.log(token, "Log: RootToken");
 
 	if (!token) {
-		redirect("/auth");
+		redirect("/login");
 	}
 
 	redirect("/n4d/patients");
