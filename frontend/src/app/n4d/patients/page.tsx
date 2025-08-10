@@ -1,6 +1,7 @@
 "use client";
 
 import type { Patient } from "@b/drizzle/schema/schema";
+import withAuth from "@f/_components/base/WithAuth";
 import PatientFormDialog, {
 	PatientSchemaType,
 } from "@f/_components/patient-settings/PatientForm";
@@ -16,7 +17,7 @@ import { toast } from "react-toastify";
 
 export type LoadingState = null | "fetch" | "save";
 
-export default function PatientsTable() {
+const PatientsTable = () => {
 	const [patients, setPatients] = useState<Patient[]>([]);
 	const [row, setRow] = useState<Patient | null>(null);
 	const [showDialog, setShowDialog] = useState(false);
@@ -136,4 +137,6 @@ export default function PatientsTable() {
 			)}
 		</div>
 	);
-}
+};
+
+export default withAuth(PatientsTable);

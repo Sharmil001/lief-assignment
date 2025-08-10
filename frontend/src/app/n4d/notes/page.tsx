@@ -13,6 +13,7 @@ import {
 import { fetchPatients } from "@f/apis/patient";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
+import withAuth from "@f/_components/base/WithAuth";
 
 export type LoadingState =
 	| null
@@ -166,4 +167,4 @@ const Notes = () => {
 	);
 };
 
-export default Notes;
+export default withAuth(Notes);
