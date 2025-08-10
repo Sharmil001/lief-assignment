@@ -1,9 +1,10 @@
-> <img width="820" height="396" alt="logo" src="https://github.com/user-attachments/assets/831bc55a-e705-4bab-876e-b1cd7b995bb1" />
+<img width="1024" height="1024" alt="ChatGPT Image Aug 7 2025 from Tech Stack Recommendation" src="https://github.com/user-attachments/assets/18a098cf-18a9-4ba8-84b5-d6d255f88b04" />
 
 # Note For Doc (Note4Doc)
 ⚡ This project implements a **Patient Case Notes System** designed for NHS doctors to:
 > Manually type patient case notes
 > Upload scanned case notes (images or PDFs, handwritten or typed) that are automatically transcribed using OCR/AI
+
 
 ## ✨ Features
 ### 📝 Case Notes Input
@@ -42,8 +43,9 @@
 ```
 3. Run the interpreter
 ```bash
-    npm run dev (root)
+    npm run dev #root
 ```
+
 
 ## 🏗️ Project Structure
 ```
@@ -71,6 +73,7 @@ lief-assignment/
 └── package.json              # Root-level dependencies & workspace config (lint, format, etc.)
 ```
 
+
 ## 🎯 Key Technologies
 ### Frontend
 - **Next 15** — latest Next.js with concurrent features for optimal performance and scalability.
@@ -78,7 +81,6 @@ lief-assignment/
 - **React Hook Form 7** - Modern, performant form management library
 - **Tailwind CSS** - Utility-first CSS framework
 - **Shadcn UI** - Beautiful component library
-
 
 ### Backend
 - **Node** - Fast JavaScript runtime
@@ -91,6 +93,7 @@ lief-assignment/
 ### AI Integration
 - **Perplexity SDK** - Unified AI interface for accessing multiple AI providers seamlessly
 - **Streaming** - Real-time text formater & streaming interactive AI response
+
 
 ## 🌐 Deployment
 ### Frontend (Vercel)
@@ -108,6 +111,7 @@ lief-assignment/
 ```
 
 ---
+
 <p align="center">
   Made with ❤️ by the <b><a href="https://github.com/Sharmil001">Sharmil Adroja</a></b>
 </p>
