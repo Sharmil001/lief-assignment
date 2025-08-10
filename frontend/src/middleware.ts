@@ -4,6 +4,7 @@ import type { NextRequest } from "next/server";
 export function middleware(req: NextRequest) {
 	const token = req.cookies.get("token")?.value;
 	const url = req.nextUrl.clone();
+	console.log(token, "Log: Token");
 
 	if (!token && !url.pathname.startsWith("/login")) {
 		url.pathname = "/login";
@@ -11,7 +12,7 @@ export function middleware(req: NextRequest) {
 	}
 
 	if (token && url.pathname === "/login") {
-		url.pathname = "";
+		url.pathname = "/n4d/patients";
 		return NextResponse.redirect(url);
 	}
 
