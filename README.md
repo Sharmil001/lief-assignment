@@ -4,7 +4,7 @@
 
 # Note For Doc (Note4Doc)
 ⚡ This project implements a **Patient Case Notes System** designed for NHS doctors to:
-> Manually type patient case notes
+> Manually type patient case notes \n
 > Upload scanned case notes (images or PDFs, handwritten or typed) that are automatically transcribed using OCR/AI
 
 
