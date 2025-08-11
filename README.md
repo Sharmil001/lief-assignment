@@ -25,9 +25,6 @@
 - **Monorepo structure** with Node workspaces
 - **Beautiful, responsive design** built with Tailwind CSS and Shadcn UI
 
-### 📐 Architecture Doc
-https://docs.google.com/document/d/1DeKigim2QIj41kKVRmhO2M6S7f4-Mw_KLOd0a7wC8iU/edit?usp=sharing
-
 ## 🚀 Quick Start
 ### Prerequisites
 - Node.js 16+
