@@ -144,6 +144,7 @@ lief-assignment/
 ## Screenshots
 <img width="600" height="600" alt="Screenshot 2025-08-11 at 10 32 16 AM" src="https://github.com/user-attachments/assets/f5d2668d-4f22-4a12-b54c-7b5cd1ba2984" />
 <img width="600" height="600" alt="Screenshot 2025-08-11 at 10 33 08 AM" src="https://github.com/user-attachments/assets/92ad5019-8268-4d8a-aaef-b9df5eeafcbe" />
+<img width="600" height="600" alt="Screenshot 2025-08-11 at 4 04 03 PM" src="https://github.com/user-attachments/assets/e4291a38-2657-469e-9750-472a7281529a" />
 <img width="600" height="600" alt="Screenshot 2025-08-11 at 10 34 09 AM" src="https://github.com/user-attachments/assets/02ca2078-f183-4ef1-a230-999d27f27b94" />
 <img width="600" height="600" alt="Screenshot 2025-08-11 at 10 32 50 AM" src="https://github.com/user-attachments/assets/bd9b96cf-ae0d-4397-9853-6ba3076c903e" />
 <img width="600" height="600" alt="Screenshot 2025-08-11 at 10 34 50 AM" src="https://github.com/user-attachments/assets/750977c6-33be-4918-8a6f-55fc9fdc161b" />
