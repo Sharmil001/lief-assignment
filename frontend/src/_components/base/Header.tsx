@@ -16,7 +16,7 @@ const Header = () => {
 	};
 
 	return (
-		<div className="sticky top-0 w-full bg-white/70 z-40 border-b-2 backdrop-blur-2xl">
+		<div className="sticky top-0 w-full bg-white/70 z-2 border-b-2 backdrop-blur-2xl">
 			<div className="container mx-auto px-4 md:px-8 py-3">
 				<div className="flex justify-between items-center">
 					<div className="flex items-center gap-4">

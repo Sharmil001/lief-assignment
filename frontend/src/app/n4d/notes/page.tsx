@@ -28,7 +28,7 @@ export type LoadingState =
 const Notes = () => {
 	const [notes, setNotes] = useState<Note[]>([]);
 	const [patients, setPatients] = useState<Patient[]>([]);
-	const [loading, setLoading] = useState<LoadingState>(null);
+	const [loading, setLoading] = useState<LoadingState>("fetchNotes");
 	const [pagination, setPagination] = useState({
 		page: 1,
 		limit: 10,
@@ -46,7 +46,6 @@ const Notes = () => {
 
 	useEffect(() => {
 		const { page, limit } = pagination;
-		setLoading("fetchNotes");
 		fetchNotesWithPagination(page, limit, debouncedSearch)
 			.then(({ data, total }) => {
 				setNotes(data);
@@ -72,6 +71,17 @@ const Notes = () => {
 		}));
 	};
 
+	const fetchUpdatedNotes = async () => {
+		const { page, limit } = pagination;
+		const { data: updatedNotes, total } = await fetchNotesWithPagination(
+			page,
+			limit,
+			"",
+		);
+		setNotes(updatedNotes);
+		setPagination((prev) => ({ ...prev, total }));
+	};
+
 	const saveNote = async (note: Note & { file: File }) => {
 		try {
 			setLoading("saving");
@@ -85,15 +95,7 @@ const Notes = () => {
 			} else {
 				await uploadNote(note);
 			}
-
-			const { page, limit } = pagination;
-			const { data: updatedNotes, total } = await fetchNotesWithPagination(
-				page,
-				limit,
-				"",
-			);
-			setNotes(updatedNotes);
-			setPagination((prev) => ({ ...prev, total }));
+			await fetchUpdatedNotes();
 			toast.success(`Note added successfully`);
 			return true;
 		} catch (err) {
@@ -108,16 +110,7 @@ const Notes = () => {
 		try {
 			setLoading("saving");
 			await updateNote(id, note);
-
-			const { page, limit } = pagination;
-			const { data: updatedNotes, total } = await fetchNotesWithPagination(
-				page,
-				limit,
-				"",
-			);
-			setNotes(updatedNotes);
-			setPagination((prev) => ({ ...prev, total }));
-			setSearchTerm("");
+			await fetchUpdatedNotes();
 			toast.success("Note updated successfully");
 			return true;
 		} catch (err) {
@@ -132,14 +125,7 @@ const Notes = () => {
 		try {
 			setLoading("deleting");
 			await deleteNote(id);
-
-			const { page, limit } = pagination;
-			const { data: updatedNotes, total } = await fetchNotesWithPagination(
-				page,
-				limit,
-			);
-			setNotes(updatedNotes);
-			setPagination((prev) => ({ ...prev, total }));
+			await fetchUpdatedNotes();
 			toast.success("Note deleted successfully");
 		} catch (err) {
 			toast.error(`Failed to delete: \n${err}`);

@@ -1,7 +1,7 @@
 import type { Note } from "@b/drizzle/schema/schema";
 import { cn } from "@f/lib/utils";
 import { formatDate } from "date-fns";
-import { Clock, NotebookPen, Pin, Trash, UserRound } from "lucide-react";
+import { Clock, NotebookPen, Trash, UserRound } from "lucide-react";
 
 const NoteCard = ({
 	note,
@@ -22,7 +22,6 @@ const NoteCard = ({
 	return (
 		<div
 			className={cn(
-				// bgColorClass.bgColorClass,
 				bgColorClass.shadowClass,
 				bgColorClass.darkBorderClass,
 				"group mb-4 break-inside-avoid border-1 rounded-lg p-4 duration-300 cursor-default z-1 relative hover:shadow-none",
@@ -77,18 +76,6 @@ const NoteCard = ({
 						</span>
 					</div>
 				</div>
-			</div>
-			<div
-				className={`top-1 right-1 absolute opacity-0 group-hover:opacity-100 transition-opacity duration-300`}
-			>
-				<button
-					className="rounded-full focus:outline-none
-                hover:bg-gray-100 p-2 cursor-pointer
-              "
-					aria-label="Delete note"
-				>
-					<Pin width={18} height={18} cursor="pointer" />
-				</button>
 			</div>
 		</div>
 	);

@@ -19,7 +19,7 @@ import type { Note, Patient } from "@b/drizzle/schema/schema";
 import { Button } from "@f/components/ui/button";
 import { Input } from "@f/components/ui/input";
 import MDEditor, { commands } from "@uiw/react-md-editor";
-import { bytesToMB } from "@f/utils/helper";
+import { formatFileSize } from "@f/utils/helper";
 import {
 	Command,
 	CommandEmpty,
@@ -33,6 +33,7 @@ import {
 	PopoverContent,
 	PopoverTrigger,
 } from "@f/components/ui/popover";
+import { cn } from "@f/lib/utils";
 
 export const noteSchema = z
 	.object({
@@ -42,7 +43,7 @@ export const noteSchema = z
 		title: z
 			.string()
 			.min(3, "Title must be ≥ 3 characters")
-			.max(20, "First name must be ≤ 20 characters"),
+			.max(40, "First name must be ≤ 20 characters"),
 		content: z.string().optional(),
 	})
 	.refine(
@@ -118,6 +119,7 @@ const NoteInput = ({
 
 	const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 		const file = e.target.files?.[0];
+		console.log(file);
 		if (file) {
 			setUploadedFile(file);
 			setValue("noteType", "scanned");
@@ -126,7 +128,12 @@ const NoteInput = ({
 
 	return (
 		<div className="flex gap-4 items-center w-full lg:w-4/6">
-			<div className="w-full px-4 py-3 border-2 border-black rounded-lg z-1 bg-white relative shadow-[3px_3px_0px_rgba(0,0,0,1)]">
+			<div
+				className={cn(
+					"w-full px-4 py-3 border-2 border-black rounded-lg bg-white relative shadow-[3px_3px_0px_rgba(0,0,0,1)]",
+					!noteType ? "z-1" : "z-3",
+				)}
+			>
 				{!noteType && !showFilter && (
 					<div className="w-full flex justify-between items-center">
 						<span
@@ -193,7 +200,7 @@ const NoteInput = ({
 												{uploadedFile?.name}
 											</span>
 											<span className="text-gray-600 text-xs">
-												{bytesToMB(Number(uploadedFile?.size))}
+												{formatFileSize(Number(uploadedFile?.size))}
 											</span>
 										</div>
 									</div>

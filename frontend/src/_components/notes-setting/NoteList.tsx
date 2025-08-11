@@ -53,7 +53,7 @@ const NoteList = (props: NoteListProps) => {
 				)}
 
 				{/* Notes list */}
-				{!props.loading && props.pagination.total > 0 && (
+				{props.loading !== "fetchNotes" && props.pagination.total > 0 && (
 					<div className="py-3 masonry-container">
 						{props.notes.map((note) => {
 							const patient = props.patients.find(

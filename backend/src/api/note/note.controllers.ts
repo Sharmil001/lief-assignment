@@ -72,9 +72,15 @@ export const NoteController = {
 						"Unable to extract text from the provided file. Try again with a different file.",
 				});
 			}
-			const formattedText = await formatNoteWithPerplexity(ocrText);
+			let formattedText = "";
+			try {
+				formattedText = await formatNoteWithPerplexity(ocrText);
+			} catch (formatError) {
+				console.error("Perplexity formatting failed:", formatError);
+				formattedText = "";
+			}
 
-			const content = formattedText || req.body.content || "";
+			const content = formattedText || ocrText || req.body.content || "";
 
 			const noteData = {
 				patientId: req.body.patientId,
@@ -93,7 +99,7 @@ export const NoteController = {
 			return res.json(result);
 		} catch (error) {
 			console.error("Error in upload:", error);
-			return res.status(500).json({ error: "Failed to upload note" });
+			return res.status(500).json({ error: `Failed: ${error}` });
 		}
 	},
 

@@ -103,7 +103,7 @@ export default function PatientTable({
 						))}
 					</TableHeader>
 					<TableBody>
-						{!pagination.total ? (
+						{loading === "fetch" ? (
 							<TableRow>
 								<TableCell
 									colSpan={columns.length}
@@ -133,9 +133,7 @@ export default function PatientTable({
 									colSpan={columns.length}
 									className="h-24 text-center"
 								>
-									<div className="flex justify-center items-center">
-										<Loader2 className="w-8 h-8 animate-spin text-gray-500" />
-									</div>
+									:) No patients found
 								</TableCell>
 							</TableRow>
 						)}

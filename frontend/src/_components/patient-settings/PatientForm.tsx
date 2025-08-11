@@ -132,6 +132,7 @@ const PatientFormDialog: React.FC<PatientFormDialogProps> = ({
 									variant="default"
 									{...register("dob")}
 									placeholder="Date of birth"
+									max={new Date().toISOString().split("T")[0]}
 								/>
 								{errors.dob && (
 									<span className="text-red-600 text-xs">

@@ -21,7 +21,7 @@ const PatientsTable = () => {
 	const [patients, setPatients] = useState<Patient[]>([]);
 	const [row, setRow] = useState<Patient | null>(null);
 	const [showDialog, setShowDialog] = useState(false);
-	const [loading, setLoading] = useState<LoadingState>(null);
+	const [loading, setLoading] = useState<LoadingState>("fetch");
 	const [pagination, setPagination] = useState({
 		page: 1,
 		limit: 10,
