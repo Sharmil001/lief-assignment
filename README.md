@@ -4,8 +4,7 @@
 
 # Note For Doc (Note4Doc)
 ⚡ This project implements a **Patient Case Notes System** designed for NHS doctors to:
-> Manually type patient case notes \n
-> Upload scanned case notes (images or PDFs, handwritten or typed) that are automatically transcribed using OCR/AI
+> Manually type patient case notes. Upload scanned case notes (images or PDFs, handwritten or typed) that are automatically transcribed using OCR/AI
 
 
 ## ✨ Features
@@ -104,7 +103,6 @@ lief-assignment/
 ## 🎯 Key Technologies
 ### Frontend
 - **Next 15** — latest Next.js with concurrent features for optimal performance and scalability.
-- **React 19** - Latest React version with concurrent rendering capabilities
 - **React Hook Form 7** - Modern, performant form management library
 - **Tailwind CSS** - Utility-first CSS framework
 - **Shadcn UI** - Beautiful component library
