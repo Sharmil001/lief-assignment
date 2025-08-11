@@ -17,12 +17,12 @@
 - **Structured text extraction** to convert handwritten or typed notes into editable and searchable text.
 
 ### 💾 Scalable Storage & Retrieval
-- Efficient storage of both raw files and processed text in a **relational database (PostgreSQL).
+- Efficient storage of both raw files and processed text in a relational database (PostgreSQL).
 - Fast retrieval APIs to access patient notes anytime.
 
 ### 🛠️ Developer Experience
 - **TypeScript-first** development
-- **Monorepo structure** with Bun workspaces
+- **Monorepo structure** with Node workspaces
 - **Beautiful, responsive design** built with Tailwind CSS and Shadcn UI
 
 
